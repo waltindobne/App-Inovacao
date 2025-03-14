@@ -1,0 +1,71 @@
+.main{
+    width: 800px;
+    height: 85vh;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid gray;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.cabecalho{
+    width: 100%;
+    background-color: lightblue;
+    padding: 10px 20px;
+    border-radius: 10px 10px 0px 0px;
+    color: darkslateblue;
+}
+
+.mensagem{
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+.perguntas{
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: darkslategray;
+}
+.respostas{
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+.quadroResposta{
+    width: 400px;
+    padding: 15px;
+    background-color: lightblue;
+    color: darkslategray;
+    border-radius: 10px;
+}
+
+.formMenssage{
+    width: 100%;
+    background-color: lightblue;
+    padding: 15px 30px;
+    border-radius: 0px 0px 10px 10px;
+    color: darkslateblue;
+    display: flex;
+    justify-content: space-between;
+}
+.formMenssage input{
+    width: 100%;
+    padding: 5px 20px;
+    background-color: lightcyan;
+    border-radius: 5px;
+    outline: none;
+}
+.formMenssage button{
+    background-color: darkslateblue;
+    color: lightblue;
+    margin-left: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
