@@ -1,9 +1,10 @@
 "use client"
+import Generator from "@/components/generator/page"
 
 function Page() {
     return (
         <div>
-            sucesso
+            <Generator/>
         </div>
     )
 }

@@ -76,3 +76,20 @@
     font-size: 18px;
     margin: 10px 20px;
 }
+
+@media(max-width: 1000px){
+    .formGenerator{
+        width: 80%;
+    }
+    .Result{
+        width: 80%;
+    }
+}
+@media(max-width: 500px){
+    .formGenerator{
+        width: 90%;
+    }
+    .Result{
+        width: 90%;
+    }
+}
