@@ -61,3 +61,13 @@
     cursor: pointer;
     border-radius: 5px;
 }
+@media(max-width: 1000px){
+    .bodyForm{
+        width: 80%;
+    }
+}
+@media(max-width: 500px){
+    .bodyForm{
+        width: 90%;
+    }
+}
