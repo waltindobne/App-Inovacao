@@ -69,3 +69,17 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.buttonAddQuest{
+    width: 200px;
+    padding: 10px;
+    background-color: darkslateblue;
+    border-radius: 10px;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

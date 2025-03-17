@@ -1,10 +1,21 @@
-"useClient";
+"use client";
 import styles from "./home.module.css";
 import { SendHorizonal } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function Page(){
+    const router = useRouter();
+
+    const navigationToGenerate = () => {
+        router.push('/generator')
+    }
+
     return(
         <div className={styles.main}>
+
+            <button onClick={navigationToGenerate} className={styles.buttonAddQuest}>
+                Descrever Vaga
+            </button>
             <div className={styles.cabecalho}>Chat Perguntas Curriculo</div>
             <div className={styles.mensagem}>
                 <div className={styles.perguntas}>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo, veniam eveniet! Assumenda temporibus voluptate quod earum provident eligendi id necessitatibus veniam nesciunt tenetur deleniti, saepe, architecto aspernatur corporis quidem culpa.</div>
