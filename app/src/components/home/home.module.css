@@ -73,18 +73,14 @@
     box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.3);
     color: lightblue;
     padding: 30px;
-    animation: moverEAlterarCor 1s;
+    animation: open .5s;
 }
-@keyframes moverEAlterarCor {
+@keyframes open {
     0% {
-        width: 500px;
-        height: 700px;
-        font-size: 8px;
+        opacity: 0;
     }
     100% {
-        width: 600px;
-        height: 800px;
-        font-size: 16px;
+        opacity: 1;
     }
 }
 .curriculo .cabecalho{
