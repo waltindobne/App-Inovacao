@@ -1,5 +1,6 @@
 "use client"
 import styles from "./questions.module.css";
+import { Paperclip, Check } from "lucide-react";
 
 function Page(){
     return(
@@ -24,10 +25,13 @@ function Page(){
                         <input type="text" placeholder="Digite aqui sua resposta"/>
                     </div>
                     <div className={styles.curriculo}>
-                        <p>Anexe seu curriculo Aqui</p>
-                        <input type="file" className={styles.lastInput}/>
+                        <label className={styles.fileInputWrapper}>
+                            <Paperclip/>
+                            Anexar Curriculo Base
+                            <input type="file" className={styles.fileCV} hidden/>
+                        </label>
                     </div>
-                    <button type="submit">Confirmar</button>
+                    <button type="submit"><Check/>Confirmar</button>
                 </form>
             </div>
         </div>

@@ -1,6 +1,6 @@
 "use client"
 import styles from "./generator.module.css";
-import { SendHorizonal } from "lucide-react";
+import { SendHorizonal, UploadIcon, Paperclip } from "lucide-react";
 
 function Page(){
     return (
@@ -33,7 +33,14 @@ function Page(){
             <div className={styles.bodyInsert}>
                 <form action="" className={styles.formGenerator}>
                     <textarea name="" id="" placeholder="Descreva sua vaga aqui"></textarea>
-                    <button type="submit"><SendHorizonal/></button>
+                    <div className={styles.descricao}>
+                        <label className={styles.fileInputWrapper}>
+                            <Paperclip/>
+                            Anexar Curriculo Base
+                            <input type="file" className={styles.fileCV} hidden/>
+                        </label>
+                        <button type="submit"><SendHorizonal/></button>
+                    </div>
                 </form>
             </div>
         </div>

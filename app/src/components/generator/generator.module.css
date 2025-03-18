@@ -26,27 +26,63 @@
     padding: 20px;
     border-radius: 20px 20px 0px 0px;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: start;
 }
+.descricao{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: start;
+    margin-top: 10px;
+}
 .formGenerator textarea{
     width: 100%;
-    height: 80px;
     padding: 10px 20px;
     background-color: white;
     display: flex;
-    max-height: 80px;
-    min-height: 80px;
+    max-height: 60px;
+    min-height: 60px;
     border-radius: 10px;
     outline: none;
 }
-.formGenerator button{
+.fileCV{
+
+}
+.fileInputWrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 250px;
+    cursor: pointer;
+    border: 2px solid darkslateblue;
+    border-radius: 8px;
+    padding: 10px 20px;
+    background-color: white;
+    color: darkslateblue;
+    font-weight: bold;
+    transition: .2s;
+}
+.fileInputWrapper:hover{
     background-color: darkslateblue;
     color: white;
-    padding: 10px 20px;
+}
+
+
+.formGenerator button{
+    background-color: white;
+    color: darkslateblue;
+    padding: 10px 40px;
     cursor: pointer;
     border-radius: 10px;
     margin-left: 20px;
+    border: 2px solid darkslateblue;
+    transition: .2s;
+    margin-left: 10px;
+}
+.formGenerator button:hover{
+    background-color: darkslateblue;
+    color: white;
 }
 
 .titulo{
