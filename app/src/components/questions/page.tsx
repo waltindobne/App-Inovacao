@@ -1,37 +1,82 @@
 "use client"
 import styles from "./questions.module.css";
 import { Paperclip, Check } from "lucide-react";
+import { useState, useEffect} from "react";
+
+const perguntas = [
+    "1- Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+    "2- Nemo, tenetur excepturi temporibus numquam quaerat exercitationem fugit natus sint.",
+    "3- Fugiat rerum est animi mollitia at soluta praesentium accusamus ipsum nesciunt.",
+    "4- Exercitationem fugit natus sint fugiat rerum est animi mollitia at soluta."
+];
 
 function Page(){
+    const [respostas, setRespostas] = useState(Array(perguntas.length).fill(""));
+    const [indiceAtual, setIndiceAtual] = useState(0);
+    const [nomeArquivo, setNomeArquivo] = useState("");
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const novasRespostas = [...respostas];
+        novasRespostas[index] = e.target.value;
+        setRespostas(novasRespostas);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const arquivo = e.target.files?.[0];
+        if (arquivo) {
+            setNomeArquivo(arquivo.name);  // Atualiza o nome do 
+        }
+        else{
+            setNomeArquivo('nehnum arquivo')
+        }
+    };
+
+    useEffect(() => {
+        if (respostas[indiceAtual].trim() !== "" && indiceAtual < perguntas.length - 1) {
+            setTimeout(() => setIndiceAtual(indiceAtual + 1), 800);
+        }
+    }, [respostas[indiceAtual]]);
+
     return(
         <div className={styles.main}>
             <h1 className={styles.titulo}>Perguntas e Respostas</h1>
             <div className={styles.bodyForm}>
                 <form action="">
-                    <div className={styles.perguntas}>
-                        <p><b>1- </b>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, tenetur excepturi temporibus numquam quaerat exercitationem fugit natus sint fugiat rerum est animi mollitia at soluta praesentium accusamus ipsum nesciunt similique.</p>
-                        <input type="text" placeholder="Digite aqui sua resposta"/>
-                    </div>
-                    <div className={styles.perguntas}>
-                        <p><b>2- </b>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, tenetur excepturi temporibus numquam quaerat exercitationem fugit natus sint fugiat rerum est animi mollitia at soluta praesentium accusamus ipsum nesciunt similique.</p>
-                        <input type="text" placeholder="Digite aqui sua resposta"/>
-                    </div>
-                    <div className={styles.perguntas}>
-                        <p><b>3- </b>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, tenetur excepturi temporibus numquam quaerat exercitationem fugit natus sint fugiat rerum est animi mollitia at soluta praesentium accusamus ipsum nesciunt similique.</p>
-                        <input type="text" placeholder="Digite aqui sua resposta"/>
-                    </div>
-                    <div className={styles.perguntas}>
-                        <p><b>4- </b>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, tenetur excepturi temporibus numquam quaerat exercitationem fugit natus sint fugiat rerum est animi mollitia at soluta praesentium accusamus ipsum nesciunt similique.</p>
-                        <input type="text" placeholder="Digite aqui sua resposta"/>
-                    </div>
-                    <div className={styles.curriculo}>
-                        <label className={styles.fileInputWrapper}>
-                            <Paperclip/>
-                            Anexar Curriculo Base
-                            <input type="file" className={styles.fileCV} hidden/>
-                        </label>
-                    </div>
-                    <button type="submit"><Check/>Confirmar</button>
+                    {perguntas.slice(0, indiceAtual + 1).map((pergunta, index) => (
+                        <div key={index} className={styles.perguntas}>
+                            <p><b>{pergunta}</b></p>
+                            <input 
+                                type="text" 
+                                placeholder="Digite aqui sua resposta" 
+                                value={respostas[index]} 
+                                onChange={(e) => handleChange(e, index)}
+                                required
+                            />
+                        </div>
+                    ))}
+
+                    {indiceAtual === perguntas.length - 1 && respostas[indiceAtual].trim() !== "" && (
+                        <div>
+                            <div className={styles.curriculo}>
+                                <label className={styles.fileInputWrapper}>
+                                    <Paperclip />
+                                    Anexar Currículo Base
+                                    <input
+                                        type="file"
+                                        className={styles.fileCV}
+                                        hidden
+                                        required
+                                        onChange={handleFileChange}  // Captura o nome do arquivo
+                                    />
+                                </label>
+                                {nomeArquivo && (
+                                    <p className={styles.fileName}>Arquivo: {nomeArquivo}</p>
+                                )}
+                            </div>
+                            <button className={styles.buttonConfirm} type="submit"><Check/>Confirmar</button>
+                        </div>
+                    )}
+                    
                 </form>
             </div>
         </div>

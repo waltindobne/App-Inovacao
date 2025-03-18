@@ -19,8 +19,8 @@
     margin-bottom: 20px;
 }
 .perguntas b{
-    color: darkslateblue;
-    font-size: 25px;
+    color: black;
+    font-size: 18px;
 }
 .perguntas{
     width: 100%;
@@ -33,13 +33,12 @@
     margin: 10px 0;
     border-bottom: 1px solid gray;
     padding: 10px 20px;
-    background-color: lightcyan;
     border-radius: 10px 10px 0 0;
 }
 .lastInput{
     background-color: white;
 }
-.bodyForm form button{
+.buttonConfirm{
     padding: 10px 20px;
     background-color: white;
     border: 2px solid #16c258;
@@ -52,7 +51,7 @@
     display: flex;
     justify-content: space-between;
 }
-.bodyForm form button:hover{
+.buttonConfirm:hover{
     background-color: #16c258;
     color: white;
 }
@@ -60,10 +59,13 @@
 
 .curriculo{
     margin: 20px 0;
+    display: flex;
+    align-items: center;
 }
 .curriculo p{
     font-size: 25px;
     color: darkslateblue;
+    margin-left: 10px;
 }
 .curriculo input{
     padding: 10px 20px;
