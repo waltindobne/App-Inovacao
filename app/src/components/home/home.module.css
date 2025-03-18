@@ -81,8 +81,10 @@
     }
     100% {
         opacity: 1;
-        width: 600px;
-        height: 800px;
+        min-width: 600px;
+        min-height: 800px;
+        max-width: 600px;
+        max-height: 800px;
     }
 }
 .curriculo .cabecalho{
