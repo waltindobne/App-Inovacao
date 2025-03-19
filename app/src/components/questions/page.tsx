@@ -1,7 +1,8 @@
 "use client"
 import styles from "./questions.module.css";
-import { Paperclip, Check } from "lucide-react";
+import { Paperclip, Check, ArrowBigLeft } from "lucide-react";
 import { useState, useEffect} from "react";
+import { useRouter } from "next/navigation";
 
 const perguntas = [
     "1- Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
@@ -14,6 +15,12 @@ function Page(){
     const [respostas, setRespostas] = useState(Array(perguntas.length).fill(""));
     const [indiceAtual, setIndiceAtual] = useState(0);
     const [nomeArquivo, setNomeArquivo] = useState("");
+    const router = useRouter();
+    
+    
+    const returnHome = () => {
+        router.push('/')
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const novasRespostas = [...respostas];
@@ -40,6 +47,7 @@ function Page(){
     return(
         <div className={styles.main}>
             <h1 className={styles.titulo}>Perguntas e Respostas</h1>
+            <button className={styles.returnHome} onClick={returnHome}><ArrowBigLeft/>Home</button>
             <div className={styles.bodyForm}>
                 <form action="">
                     {perguntas.slice(0, indiceAtual + 1).map((pergunta, index) => (

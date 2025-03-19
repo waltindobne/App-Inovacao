@@ -13,6 +13,9 @@
     width: 50%;
     height: 100%;
     margin: 10px auto;
+    background-color: rgb(231, 230, 230) ;
+    padding: 30px;
+    border-radius: 20px;
 }
 .perguntas{
     font-size: 18px;
@@ -34,6 +37,7 @@
     border-bottom: 1px solid gray;
     padding: 10px 20px;
     border-radius: 10px 10px 0 0;
+    background-color: white;
 }
 .lastInput{
     background-color: white;
@@ -103,4 +107,16 @@
     .bodyForm{
         width: 90%;
     }
+}
+.returnHome{
+    width: 120px;
+    background-color: darkslateblue;
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+    cursor: pointer;
+    color: white;
 }

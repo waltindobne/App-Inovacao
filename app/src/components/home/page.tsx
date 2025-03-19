@@ -4,6 +4,23 @@ import { SendHorizonal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
 
+const Vagas = [
+    {
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH-Xu2k0C4wdc35bq-r9uI1813kclztywZhw&s",
+        "vaga": "Desenvolvedor Frontend",
+        "quantidade": 2,
+        "salario": 4000,
+        "requisitos": "html, css, javascript, react, tailwind"
+    },
+    {
+        "foto": "https://i.pinimg.com/564x/b4/00/bb/b400bba24a3ac713c5611facf4376d7e.jpg",
+        "vaga": "Desenvolvedor Backend",
+        "quantidade": 3,
+        "salario": 4500,
+        "requisitos": "c#, sql, github, azure"
+    }
+];
+
 function Page(){
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +32,9 @@ function Page(){
         router.push('/questions')
     }
 
-    const toggleCurriculo = () => setIsOpen(!isOpen);
+    const toggleCandidatos = () => {
+        router.push('/candidate')
+    }
 
     return(
         <div className={styles.main}>
@@ -25,77 +44,32 @@ function Page(){
             <button onClick={navigationToQuest} className={styles.buttonAddQuest}>
                 Responder Perguntas
             </button>
-            <h1 className={styles.titulo}>Candidatos</h1>
+            <h1 className={styles.titulo}>Vagas Disponiveis - 2</h1>
             <div className={styles.bodyCandidates}>
-                <button onClick={toggleCurriculo} className={styles.candidate}>
-                    <img src="https://media.licdn.com/dms/image/v2/D4D03AQE-gQEecOmEyg/profile-displayphoto-shrink_200_200/B4DZQgPyT.HwAY-/0/1735707797234?e=2147483647&v=beta&t=QXYg9A1fyjKX2FgWFC4p2eWl5-lGr6CvhkTgl1oaWGI" alt="" />
+                {Vagas.map((vaga, index) => (
+                <button onClick={toggleCandidatos} className={styles.candidate} key={index}>
+                    <img src={vaga.foto} alt="" />
                     <div className={styles.details}>
                         <div className={styles.linha}>
-                            <tr>nome:</tr>
-                            <td>joão silva</td>
-                        </div>
-                        <div className={styles.linha}>
-                            <tr>Email:</tr>
-                            <td>joão silva</td>
-                        </div>
-                        <div className={styles.linha}>
-                            <tr>Telefone:</tr>
-                            <td>joão silva</td>
-                        </div>
-                        <div className={styles.linha}>
                             <tr>Vaga:</tr>
-                            <td>joão silva</td>
+                            <td>{vaga.vaga}</td>
+                        </div>
+                        <div className={styles.linha}>
+                            <tr>Disponiveis:</tr>
+                            <td>{vaga.quantidade}</td>
+                        </div>
+                        <div className={styles.linha}>
+                            <tr>Salario:</tr>
+                            <td>{vaga.salario}</td>
+                        </div>
+                        <div className={styles.linha}>
+                            <tr>Requisitos:</tr>
+                            <td>{vaga.requisitos}</td>
                         </div>
                     </div>
                 </button>
+                ))}
             </div>
-
-
-
-
-
-            {isOpen && (
-            <div className={styles.bodyCurriculo}>
-                <div className={styles.curriculo}>
-                    <div className={styles.cabecalho}>
-                        <div className="flex">
-                            <img src="https://media.licdn.com/dms/image/v2/D4D03AQE-gQEecOmEyg/profile-displayphoto-shrink_200_200/B4DZQgPyT.HwAY-/0/1735707797234?e=2147483647&v=beta&t=QXYg9A1fyjKX2FgWFC4p2eWl5-lGr6CvhkTgl1oaWGI" alt="" />
-                            <div className={styles.details}>
-                                <div className={styles.linha}>
-                                    <tr>nome:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                                <div className={styles.linha}>
-                                    <tr>Email:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                                <div className={styles.linha}>
-                                    <tr>Telefone:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                                <div className={styles.linha}>
-                                    <tr>Vaga:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                            </div>
-                        </div>
-                        <button onClick={toggleCurriculo}>X</button>
-                    </div><br /><hr /><br />
-                    <div className={styles.result}>
-                        <b>1- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>2- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>3- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>4- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>5- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                    </div>  
-                </div>
-            </div>
-             )}
         </div>
     )
 }

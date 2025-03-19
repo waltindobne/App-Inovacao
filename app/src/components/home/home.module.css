@@ -46,11 +46,11 @@
     max-height: 150px;
 }
 .candidate .details{
-    width: 300px;
+    width: 250px;
 }
 .candidate .linha{
     display: flex;
-    margin: 10px 0px 10px 20px;
+    margin: 0px 0px 10px 20px;
 }
 .candidate .linha tr{
     margin-right: 10px;
