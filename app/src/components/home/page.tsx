@@ -31,6 +31,9 @@ function Page(){
     const navigationToQuest = () => {
         router.push('/questions')
     }
+    const navigationToRanking = () => {
+        router.push('/Ranking')
+    }
 
     const toggleCandidatos = () => {
         router.push('/candidate')
@@ -44,10 +47,14 @@ function Page(){
             <button onClick={navigationToQuest} className={styles.buttonAddQuest}>
                 Responder Perguntas
             </button>
+            <button onClick={navigationToRanking} className={styles.buttonAddQuest}>
+                Ranking Candidatos
+            </button>
+            {/*
             <h1 className={styles.titulo}>Vagas Disponiveis - 2</h1>
-            <div className={styles.bodyCandidates}>
+            <div className={styles.bodyVagas}>
                 {Vagas.map((vaga, index) => (
-                <button onClick={toggleCandidatos} className={styles.candidate} key={index}>
+                <button onClick={toggleCandidatos} className={styles.vaga} key={index}>
                     <img src={vaga.foto} alt="" />
                     <div className={styles.details}>
                         <div className={styles.linha}>
@@ -69,7 +76,7 @@ function Page(){
                     </div>
                 </button>
                 ))}
-            </div>
+            </div>*/}
         </div>
     )
 }

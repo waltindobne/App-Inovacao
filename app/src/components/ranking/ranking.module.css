@@ -1,0 +1,34 @@
+.main{
+    width: 100%;
+    color: black;
+}
+.titulo{
+    color: black;
+    font-size: 30px;
+    color: darkslateblue;
+    padding: 20px 30px;
+}
+.returnHome{
+    width: 120px;
+    background-color: darkslateblue;
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+    cursor: pointer;
+    color: white;
+}
+.tituloRanking{
+    color: darkslateblue;
+    font-weight: 600;
+    font-size: 20px;
+}
+.bodyRanking{
+    width: 50%;
+    margin: 0 auto;
+}
+.bodyRanking p {
+    margin: 10px 20px;
+}

@@ -50,23 +50,27 @@ function Page(){
             <div className={styles.bodyCandidates}>
                 {Candidatos.map((candidato, index) => (
                 <button onClick={toggleCurriculo} className={styles.candidate} key={index}>
-                    <img src={candidato.foto} alt="" />
+                    {/*<img src={candidato.foto} alt="" />*/}
                     <div className={styles.details}>
                         <div className={styles.linha}>
                             <tr>nome:</tr>
                             <td>{candidato.nome}</td>
                         </div>
-                        <div className={styles.linha}>
+                        {/*<div className={styles.linha}>
                             <tr>Email:</tr>
                             <td>{candidato.email}</td>
                         </div>
                         <div className={styles.linha}>
                             <tr>Telefone:</tr>
                             <td>{candidato.telefone}</td>
-                        </div>
+                        </div>*/}
                         <div className={styles.linha}>
                             <tr>Aptidão:</tr>
                             <td>{candidato.aptidao}%</td>
+                        </div>
+                        <div className={styles.linha}>
+                            <tr>motivo:</tr>
+                            <td></td>
                         </div>
                     </div>
                 </button>

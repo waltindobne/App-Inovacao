@@ -1,14 +1,81 @@
 "use client"
 import styles from "./generator.module.css";
+import {useState, useEffect} from "react";
 import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { InovaService } from "@/Services/WebApi";
+import { useData } from "@/Context/AppContext";
+
+interface DataQuest{
+    perguntas: string[],
+    respostas: string,
+    vaga: string,
+    curriculo: string,
+    anotacoes: string,
+    transcricao: string,
+    relatorios: string
+}
 
 function Page(){
     const router = useRouter();
+    const { data, setData } = useData();
+    const [formValues, setFormValues] = useState({
+        vaga: "",
+        curriculo: "",
+        anotacoes: "",
+        transcricao: "",
+        relatorios: "",
+        perguntas: "",
+        respostas: ""
+    });
+    /*
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormValues({ ...formValues, [name]: value });
+    };
+    
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Atualizando o contexto com os novos dados
+        setData({
+            ...data,
+            vaga: formValues.vaga,
+            curriculo: formValues.curriculo,
+            anotacoes: formValues.anotacoes,
+            transcricao: formValues.transcricao,
+            relatorios: formValues.relatorios,
+            perguntas: formValues.perguntas ? [formValues.perguntas] : [],
+            respostas: formValues.respostas
+        });
+
+        console.log("Dados atualizados no contexto!");
+    };*/
 
     const returnHome = () => {
         router.push('/')
     }
+    const next = (e: React.FormEvent) => {
+        e.preventDefault(); // Impede o envio padrão do formulário
+    
+        // Atualiza os dados no contexto antes de redirecionar
+        setData({
+            ...data,
+            vaga: formValues.vaga,
+            curriculo: formValues.curriculo,
+            anotacoes: formValues.anotacoes,
+            transcricao: formValues.transcricao,
+            relatorios: formValues.relatorios,
+            perguntas: formValues.perguntas ? [formValues.perguntas] : [],
+            respostas: formValues.respostas
+        });
+    
+        console.log("Dados atualizados no contexto!", data);
+    
+        // Redireciona para a página de perguntas
+        router.push('/questions');
+    };
+    
 
     return (
         <div className={styles.main}>
@@ -16,19 +83,27 @@ function Page(){
             <button className={styles.returnHome} onClick={returnHome}><ArrowBigLeft/>Home</button>
             <div>
                 <div className={styles.bodyInsert}>
-                    <form action="" className={styles.formGenerator}>
-                        <textarea name="" id="" placeholder="Descreva sua vaga aqui"></textarea>
+                    <form method="post" onSubmit={next} className={styles.formGenerator}>
+                        <textarea 
+                            name="vaga" 
+                            id="" 
+                            placeholder="Descreva sua vaga aqui" 
+                            value={formValues.vaga} 
+                            onChange={(e) => setFormValues({ ...formValues, vaga: e.target.value })}
+                        />
                         <div className={styles.descricao}>
-                            <input type="text" placeholder="Anotações"/>
-                            <input type="text" placeholder="Trasncrição"/>
+                            <input type="text" placeholder="Anotações"  className={styles.input}/>
+                            <input type="text" placeholder="Trasncrição" className={styles.input} />
                         </div>
                         <div className={styles.descricao}>
+                            {/*
                             <label className={styles.fileInputWrapper}>
                                 <Paperclip/>
                                 Anexar Curriculo Base
                                 <input type="file" className={styles.fileCV} hidden/>
-                            </label>
-                            <input type="number" placeholder="Numero de Candidatos" required/>
+                            </label>*/}
+                            <input type="text" className={styles.fileCV} placeholder="Curriculo" />
+                            {/*<input type="number" placeholder="Descreva a vaga" required className={styles.quantCandidatos}/>*/}
                             <button type="submit"><SendHorizonal/></button>
                         </div>
                     </form>

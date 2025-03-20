@@ -3,6 +3,7 @@ import styles from "./questions.module.css";
 import { Paperclip, Check, ArrowBigLeft } from "lucide-react";
 import { useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
+import { useData } from "@/Context/AppContext";
 
 const perguntas = [
     "1- Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
@@ -16,7 +17,7 @@ function Page(){
     const [indiceAtual, setIndiceAtual] = useState(0);
     const [nomeArquivo, setNomeArquivo] = useState("");
     const router = useRouter();
-    
+    const { data } = useData();
     
     const returnHome = () => {
         router.push('/')
@@ -28,7 +29,7 @@ function Page(){
         setRespostas(novasRespostas);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /*const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const arquivo = e.target.files?.[0];
         if (arquivo) {
             setNomeArquivo(arquivo.name);  // Atualiza o nome do 
@@ -36,7 +37,7 @@ function Page(){
         else{
             setNomeArquivo('nehnum arquivo')
         }
-    };
+    };*/
 
     useEffect(() => {
         if (respostas[indiceAtual].trim() !== "" && indiceAtual < perguntas.length - 1) {
@@ -49,7 +50,7 @@ function Page(){
             <h1 className={styles.titulo}>Perguntas e Respostas</h1>
             <button className={styles.returnHome} onClick={returnHome}><ArrowBigLeft/>Home</button>
             <div className={styles.bodyForm}>
-                <form action="">
+                {/*<form action="">
                     {perguntas.slice(0, indiceAtual + 1).map((pergunta, index) => (
                         <div key={index} className={styles.perguntas}>
                             <p><b>{pergunta}</b></p>
@@ -65,7 +66,8 @@ function Page(){
 
                     {indiceAtual === perguntas.length - 1 && respostas[indiceAtual].trim() !== "" && (
                         <div>
-                            <div className={styles.curriculo}>
+                            {/*<div className={styles.curriculo}>
+                                
                                 <label className={styles.fileInputWrapper}>
                                     <Paperclip />
                                     Anexar Currículo Base
@@ -80,12 +82,28 @@ function Page(){
                                 {nomeArquivo && (
                                     <p className={styles.fileName}>Arquivo: {nomeArquivo}</p>
                                 )}
-                            </div>
+                            </div>*
                             <button className={styles.buttonConfirm} type="submit"><Check/>Confirmar</button>
                         </div>
                     )}
                     
-                </form>
+                </form>*/}
+
+                <div>
+                    <h2>Dados Atualizados</h2>
+                    <p><strong>Vaga:</strong> {data.vaga}</p>
+                    <p><strong>Currículo:</strong> {data.curriculo}</p>
+                    <p><strong>Anotações:</strong> {data.anotacoes}</p>
+                    <p><strong>Transcrição:</strong> {data.transcricao}</p>
+                    <p><strong>Relatórios:</strong> {data.relatorios}</p>
+                    <h3>Perguntas:</h3>
+                    <ul>
+                        {data.perguntas.map((pergunta, index) => (
+                            <li key={index}>{pergunta}</li>
+                        ))}
+                    </ul>
+                    <p><strong>Respostas:</strong> {data.respostas}</p>
+                </div>
             </div>
         </div>
     )
