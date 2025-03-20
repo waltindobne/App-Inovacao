@@ -62,34 +62,30 @@ function Page(){
     const returnHome = () => {
         router.push('/')
     }
-    const handleChangeSubmit = (e: React.FormEvent) => {
-        e.preventDefault(); // Impede o envio padrão do formulário
-        useEffect(() => {
-            InovaService.gerarQuest(numQuest, vaga, perguntas)
-                .then((response) => {
-                    console.log(response.data)
-                })
-                .catch((error) => {
-                    console.error('Alguma coisa nessa budega:', error);
-                });
-        });
-        // Atualiza os dados no contexto antes de redirecionar
+    const handleChangeSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+    
+        try {
+            const response = await InovaService.gerarQuest(numQuest, vaga, perguntas);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Erro ao gerar perguntas:', error);
+        }
         setData({
             ...data,
-            vaga: vaga,
-            curriculo: curriculo,
-            anotacoes: anotacoes,
-            transcricao: transcricao,
+            vaga,
+            curriculo,
+            anotacoes,
+            transcricao,
             relatorios: formValues.relatorios,
-            perguntas: perguntas,
+            perguntas,
             respostas: formValues.respostas
         });
     
         console.log("Dados atualizados no contexto!", data);
-    
-        // Redireciona para a página de perguntas
         router.push('/questions');
     };
+    
 
 
     return (
