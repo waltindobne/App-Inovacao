@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL : "https://smart.bne.com.br/Api/",
+    baseURL : "https://smart.bne.com.br",
     headers: {
         'Content-Type': 'application/json'
     }
