@@ -24,8 +24,7 @@ function Page(){
     const [ anotacoes, setAnotacoes] = useState('')
     const [ transcricao, setTranscricao] = useState('')
     const [ curriculo, setCurriculo] = useState('')
-    const [ perguntas, setPerguntas] = useState([''])
-
+    const [perguntas, setPerguntas] = useState<string[]>([]);
     const [formValues, setFormValues] = useState({
         vaga: "",
         curriculo: "",
@@ -69,7 +68,7 @@ function Page(){
             //console.log(response.data);
             var i = 0;
             for(i = 0; perguntas.length < 10; i++){
-                perguntas.push(`teste:${i}`)
+                perguntas.push(`${i+1} - Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae?`)
                 console.log(perguntas);
             }
         } catch (error) {

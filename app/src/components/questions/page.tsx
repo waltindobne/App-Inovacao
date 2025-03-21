@@ -25,7 +25,7 @@ function Page() {
 
     useEffect(() => {
         if (respostas[indiceAtual]?.trim() !== "" && indiceAtual < perguntas.length - 1) {
-            setTimeout(() => setIndiceAtual(indiceAtual + 1), 800);
+            setTimeout(() => setIndiceAtual(indiceAtual + 1), 1200);
         }
     }, [respostas, indiceAtual, perguntas]);
 
@@ -37,9 +37,10 @@ function Page() {
                 <form action="">
                     {perguntas.slice(0, indiceAtual + 1).map((pergunta, index) => (
                         <div key={index} className={styles.perguntas}>
-                            <p><b>{pergunta}</b></p>
+                            <label htmlFor="respostas"><b>{pergunta}</b></label>
                             <input
                                 type="text"
+                                name="respostas"
                                 placeholder="Digite aqui sua resposta"
                                 value={respostas[index]} 
                                 onChange={(e) => handleChange(e, index)}
