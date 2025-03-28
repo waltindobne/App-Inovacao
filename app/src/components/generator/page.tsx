@@ -64,16 +64,20 @@ function Page(){
     const handleChangeSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            //const response = await InovaService.gerarQuest(numQuest, vaga, perguntas);
-            //console.log(response.data);
-            var i = 0;
-            for(i = 0; perguntas.length < 10; i++){
-                perguntas.push(`${i+1} - Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae?`)
-                console.log(perguntas);
+            let novasPerguntas = [...perguntas];
+            while (novasPerguntas.length < 10) {
+                const response = await InovaService.gerarQuest(numQuest, vaga, novasPerguntas);
+                console.log(response.data);
+        
+                novasPerguntas.push(`${novasPerguntas.length + 1} - Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae?`);
+                console.log(novasPerguntas);
+        
+                setPerguntas([...novasPerguntas]);
             }
         } catch (error) {
             console.error('Erro ao gerar perguntas:', error);
         }
+        
         setData({
             ...data,
             vaga,
@@ -108,6 +112,7 @@ function Page(){
                             placeholder="Digite aqui"  
                             value={vaga} 
                             onChange={(e) => setVaga(e.target.value)}
+                            required
                         />
                         <label htmlFor="curriculo">Coloque seu curriculo aqui</label>
                         <textarea 
