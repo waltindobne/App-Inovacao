@@ -50,7 +50,7 @@ function Page(){
             <button onClick={navigationToRanking} className={styles.buttonAddQuest}>
                 Ranking Candidatos
             </button>
-            {/*
+            
             <h1 className={styles.titulo}>Vagas Disponiveis - 2</h1>
             <div className={styles.bodyVagas}>
                 {Vagas.map((vaga, index) => (
@@ -76,7 +76,7 @@ function Page(){
                     </div>
                 </button>
                 ))}
-            </div>*/}
+            </div>
         </div>
     )
 }

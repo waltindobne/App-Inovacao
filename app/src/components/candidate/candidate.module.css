@@ -21,8 +21,9 @@
 }
 
 .bodyCandidates{
-    width: 80%;
+    width: 600px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     flex-wrap: wrap;
     color: black;
@@ -33,7 +34,6 @@
     padding: 20px;
     border: 1px solid darkslateblue;
     border-radius: 10px;
-    height: 350px;
     display: flex;
     margin: 8px;
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
@@ -46,7 +46,6 @@
     max-height: 150px;
 }
 .candidate .details{
-    width: 250px;
 }
 .candidate .linha{
     display: flex;
@@ -58,7 +57,7 @@
 
 .returnHome{
     width: 120px;
-    background-color: darkslateblue;
+    background-color: #483d8b;
     padding: 10px 20px;
     border-radius: 10px;
     display: flex;
