@@ -1,5 +1,4 @@
 "use client";
-import styles from "./candidate.module.css";
 import { SendHorizonal , ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
@@ -123,17 +122,17 @@ function Page(){
         return [...lista].sort((a, b) => b.aptidao - a.aptidao);
     };
     return(
-        <div className={styles.main}>
-            <button className={styles.returnHome} onClick={returnHome}><ArrowBigLeft/>Home</button>
-            <h1 className={styles.titulo}>Candidatos Aptos - {Candidatos.length}</h1>
-            <div className={styles.bodyCandidates}>
+        <div>
+            <button className="" onClick={returnHome}><ArrowBigLeft/>Home</button>
+            <h1 className="">Candidatos Aptos - {Candidatos.length}</h1>
+            <div className="">
                 {ordenarPorAptidao(Candidatos).map((candidato, index) => (
-                <button onClick={toggleCurriculo} className={styles.candidate} key={index}>
+                <button onClick={toggleCurriculo} className="" key={index}>
                     {/*<img src={candidato.foto} alt="" />*/}
                     {Candidatos.length}
-                    <div className={styles.details}>
+                    <div className="">
                         <h1></h1>
-                        <div className={styles.linha}>
+                        <div className="">
                             <tr>nome:</tr>
                             <td>{candidato.nome}</td>
                         </div>
@@ -145,11 +144,11 @@ function Page(){
                             <tr>Telefone:</tr>
                             <td>{candidato.telefone}</td>
                         </div>*/}
-                        <div className={styles.linha}>
+                        <div className="">
                             <tr>Aptidão:</tr>
                             <td>{candidato.aptidao}%</td>
                         </div>
-                        <div className={styles.linha}>
+                        <div className="">
                             
                             <td>{candidato.motivo}</td>
                         </div>
@@ -163,25 +162,25 @@ function Page(){
 
 
             {isOpen && (
-            <div className={styles.bodyCurriculo}>
-                <div className={styles.curriculo}>
-                    <div className={styles.cabecalho}>
+            <div className="">
+                <div className="">
+                    <div className="">
                         <div className="flex">
                             <img src="https://media.licdn.com/dms/image/v2/D4D03AQE-gQEecOmEyg/profile-displayphoto-shrink_200_200/B4DZQgPyT.HwAY-/0/1735707797234?e=2147483647&v=beta&t=QXYg9A1fyjKX2FgWFC4p2eWl5-lGr6CvhkTgl1oaWGI" alt="" />
-                            <div className={styles.details}>
-                                <div className={styles.linha}>
+                            <div className="">
+                                <div className="">
                                     <tr>nome:</tr>
                                     <td>joão silva</td>
                                 </div>
-                                <div className={styles.linha}>
+                                <div className="">
                                     <tr>Email:</tr>
                                     <td>joão silva</td>
                                 </div>
-                                <div className={styles.linha}>
+                                <div className="">
                                     <tr>Telefone:</tr>
                                     <td>joão silva</td>
                                 </div>
-                                <div className={styles.linha}>
+                                <div className="">
                                     <tr>Vaga:</tr>
                                     <td>joão silva</td>
                                 </div>
@@ -189,7 +188,7 @@ function Page(){
                         </div>
                         <button onClick={toggleCurriculo}>X</button>
                     </div><br /><hr /><br />
-                    <div className={styles.result}>
+                    <div className="">
                         <b>1- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
                         <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
                         <b>2- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>

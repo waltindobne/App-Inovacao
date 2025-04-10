@@ -1,5 +1,4 @@
 "use client"
-import styles from "./generator.module.css";
 import {useState, useEffect} from "react";
 import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -57,10 +56,6 @@ function Page(){
 
         console.log("Dados atualizados no contexto!");
     };*/
-
-    const returnHome = () => {
-        router.push('/')
-    }
     const handleChangeSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -96,77 +91,57 @@ function Page(){
 
 
     return (
-        <div className={styles.main}>
-            <nav className={styles.navigation}>
-                <h1 className={styles.titulo}>Gerar perguntas</h1>
-                <button className={styles.returnHome} onClick={returnHome}><ArrowBigLeft/>Home</button>
-            </nav>
-            <div>
-                <div className={styles.bodyInsert}>
-                    <form method="post" onSubmit={handleChangeSubmit} className={styles.formGenerator}>
-                        <h1 className={styles.titulo2}></h1>
-                        <label htmlFor="vaga">Descrição da vaga</label>
-                        <textarea 
-                            name="vaga" 
-                            id="" 
-                            placeholder="Digite aqui"  
-                            value={vaga} 
-                            onChange={(e) => setVaga(e.target.value)}
-                            required
-                        />
-                        <label htmlFor="curriculo">Coloque seu curriculo aqui</label>
-                        <textarea 
-                            name="curriculo" 
-                            id="" 
-                            placeholder="Digite aqui" 
-                            value={curriculo} 
-                            onChange={(e) => setCurriculo(e.target.value)}
-                        />
-                        <label htmlFor="anotacao">Coloque suas Anotações aqui</label>
-                        <textarea 
-                            name="anotacao" 
-                            id="" 
-                            placeholder="Digite aqui" 
-                            value={anotacoes} 
-                            onChange={(e) => setAnotacoes(e.target.value)}
-                        />
-                        <label htmlFor="transcricao">Coloque suas Transcrições aqui</label>
-                        <textarea 
-                            name="trascricao" 
-                            id="" 
-                            placeholder="Digite aqui" 
-                            value={transcricao} 
-                            onChange={(e) => setTranscricao(e.target.value)}
-                        />
-                        <div className={styles.descricao}>
-                            {/*
-                            <input 
-                                type="text"
-                                placeholder="Anotações"
-                                className={styles.input}
+        <div className="w-full flex justify-center">
+            <div className="w-3/5 mt-10">
+                <form method="post" onSubmit={handleChangeSubmit} className="w-full p-8 bg-gray-100 rounded-2xl border-2 border-blue-900 text-slate-800 flex flex-col">
+                    <h1 className="text-xl text-blue-900 mb-4">Dados do Candidato</h1>
+                    <div className="">
+                        <div className="mb-3">
+                            <label htmlFor="vaga" className="font-bold">Vaga:</label>
+                            <select name="" id="" className="w-full p-2 bg-white border border-slate-400 rounded-lg">
+                                <option value="">vaga1</option>
+                                <option value="">vaga2</option>
+                                <option value="">vaga3</option>
+                                <option value="">vaga4</option>
+                            </select>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="curriculo" className="font-bold">Coloque seu curriculo aqui:</label>
+                            <textarea 
+                                name="curriculo" 
+                                id="" 
+                                placeholder="Digite aqui" 
+                                value={curriculo} 
+                                onChange={(e) => setCurriculo(e.target.value)}
+                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg"
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="anotacao" className="font-bold">Coloque suas Anotações aqui</label>
+                            <textarea 
+                                name="anotacao" 
+                                id="" 
+                                placeholder="Digite aqui" 
                                 value={anotacoes} 
                                 onChange={(e) => setAnotacoes(e.target.value)}
+                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg"
                             />
-                            <input
-                                type="text"
-                                placeholder="Transcrição"
-                                className={styles.input}
+                        </div>
+                        <div>
+                            <label htmlFor="transcricao">Coloque suas Transcrições aqui</label>
+                            <textarea 
+                                name="trascricao" 
+                                id="" 
+                                placeholder="Digite aqui" 
                                 value={transcricao} 
                                 onChange={(e) => setTranscricao(e.target.value)}
-                            />*/}
+                            />
                         </div>
-                        <div className={styles.descricao}>
-                            {/*
-                            <label className={styles.fileInputWrapper}>
-                                <Paperclip/>
-                                Anexar Curriculo Base
-                                <input type="file" className={styles.fileCV} hidden/>
-                            </label>*/}
-                            {/*<input type="number" placeholder="Descreva a vaga" required className={styles.quantCandidatos}/>*/}
+                        <div className="">
                             <button type="submit">Enviar <SendHorizonal/></button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>{/*}
             <div className={styles.Result}>
                 <div className={styles.pergunta}>

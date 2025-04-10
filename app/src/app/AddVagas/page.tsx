@@ -1,13 +1,12 @@
 "use client"
-import Ranking from "@/components/ranking/page";
 import Header from "@/components/layout/header";
+import AddVaga from "@/components/AddVaga/AddVaga";
 
-function Page(){
+export default function Page(){
     return(
         <div>
             <Header/>
-            <Ranking/>
+            <AddVaga/>
         </div>
-    );
+    )
 }
-export default Page;

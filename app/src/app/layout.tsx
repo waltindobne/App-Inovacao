@@ -24,7 +24,10 @@ import { DataProvider } from "@/Context/AppContext";
     children: React.ReactNode;
   }>) {
     return (
-      <html lang="en">
+      <html lang="pt-br">
+        <head>
+          <link rel="shortcut icon" href="https://cdn-icons-png.freepik.com/256/6862/6862037.png?semt=ais_hybrid" type="image/x-icon" />
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >

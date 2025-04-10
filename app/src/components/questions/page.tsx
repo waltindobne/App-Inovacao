@@ -1,5 +1,4 @@
 "use client"
-import styles from "./questions.module.css";
 import { Paperclip, Check, ArrowBigLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -30,13 +29,13 @@ function Page() {
     }, [respostas, indiceAtual, perguntas]);
 
     return (
-        <div className={styles.main}>
-            <h1 className={styles.titulo}>Perguntas e Respostas</h1>
-            <button className={styles.returnHome} onClick={returnHome}><ArrowBigLeft />Home</button>
-            <div className={styles.bodyForm}>
+        <div className="">
+            <h1 className="">Perguntas e Respostas</h1>
+            <button className="" onClick={returnHome}><ArrowBigLeft />Home</button>
+            <div className="">
                 <form action="">
                     {perguntas.slice(0, indiceAtual + 1).map((pergunta, index) => (
-                        <div key={index} className={styles.perguntas}>
+                        <div key={index} className="">
                             <label htmlFor="respostas"><b>{pergunta}</b></label>
                             <input
                                 type="text"
@@ -51,7 +50,7 @@ function Page() {
 
                     {indiceAtual === perguntas.length - 1 && respostas[indiceAtual].trim() !== "" && (
                         <div>
-                            <button className={styles.buttonConfirm} type="submit"><Check />Confirmar</button>
+                            <button className="" type="submit"><Check />Confirmar</button>
                         </div>
                     )}
                 </form>

@@ -1,5 +1,4 @@
 "use client";
-import styles from "./home.module.css";
 import { SendHorizonal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
@@ -25,52 +24,32 @@ function Page(){
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
 
-    const navigationToGenerate = () => {
-        router.push('/generator')
-    }
-    const navigationToQuest = () => {
-        router.push('/questions')
-    }
-    const navigationToRanking = () => {
-        router.push('/Ranking')
-    }
-
     const toggleCandidatos = () => {
         router.push('/candidate')
     }
 
     return(
-        <div className={styles.main}>
-            <button onClick={navigationToGenerate} className={styles.buttonAddQuest}>
-                Descrever Vaga
-            </button>
-            <button onClick={navigationToQuest} className={styles.buttonAddQuest}>
-                Responder Perguntas
-            </button>
-            <button onClick={navigationToRanking} className={styles.buttonAddQuest}>
-                Ranking Candidatos
-            </button>
-            
-            <h1 className={styles.titulo}>Vagas Disponiveis - 2</h1>
-            <div className={styles.bodyVagas}>
+        <div className="w-4/5 mx-auto my-10">
+            <h1 className="w-full flex justify-center text-sky-900 text-2xl py-3">Vagas Disponiveis - {Vagas.length}</h1>
+            <div className="w-full flex flex-wrap justify-center">
                 {Vagas.map((vaga, index) => (
-                <button onClick={toggleCandidatos} className={styles.vaga} key={index}>
-                    <img src={vaga.foto} alt="" />
-                    <div className={styles.details}>
-                        <div className={styles.linha}>
-                            <tr>Vaga:</tr>
+                <button onClick={toggleCandidatos} className="w- m-2 p-4 flex text-slate-900 bg-gray-200 border-2 border-blue-900 rounded-lg hover:bg-blue-900 hover:text-white" key={index}>
+                    <img src={vaga.foto} alt="" className="w-60 rounded-md"/>
+                    <div className="w-60 mx-4 flex flex-col items-start">
+                        <div className="w-full flex border-b border-gray-400">
+                            <tr className="font-bold mr-2">Vaga:</tr>
                             <td>{vaga.vaga}</td>
                         </div>
-                        <div className={styles.linha}>
-                            <tr>Disponiveis:</tr>
+                        <div className="w-full flex border-b border-gray-400">
+                            <tr className="font-bold mr-2">Disponiveis:</tr>
                             <td>{vaga.quantidade}</td>
                         </div>
-                        <div className={styles.linha}>
-                            <tr>Salario:</tr>
+                        <div className="w-full flex border-b border-gray-400">
+                            <tr className="font-bold mr-2">Salario:</tr>
                             <td>{vaga.salario}</td>
                         </div>
-                        <div className={styles.linha}>
-                            <tr>Requisitos:</tr>
+                        <div className="w-full flex">
+                            <tr className="font-bold mr-2">Requisitos:</tr>
                             <td>{vaga.requisitos}</td>
                         </div>
                     </div>
