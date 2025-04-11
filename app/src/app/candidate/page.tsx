@@ -1,12 +1,12 @@
-"use client"
-import Generator from "@/components/generator/page"
+"use client";
+import Candidates from "@/components/candidate/page";
 import Header from "@/components/layout/header";
 
-function Page() {
-    return (
+function Page(){
+    return(
         <div>
             <Header/>
-            <Generator/>
+            <Candidates/>
         </div>
     )
 }

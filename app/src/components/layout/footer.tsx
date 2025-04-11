@@ -5,7 +5,7 @@ function Page(){
 
 
     return (
-        <main className={styles.footer}>
+        <main className="w-full px-6 py-4 bg-blue-900">
 
         </main>
     )
