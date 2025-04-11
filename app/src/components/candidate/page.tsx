@@ -4,6 +4,17 @@ import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
 import { useData } from "@/Context/AppContext";
 
+interface Candidato {
+    nome: string;
+    email: string;
+    telefone: string;
+    idade: number;
+    aptidao: number;
+    motivo: string;
+    vaga: number;
+    foto: string;
+}
+
 const Candidatos = [
     {
         "nome": "João",
@@ -115,10 +126,9 @@ function Page(){
     const { data } = useData();
     const [ Result, setResult ] = useState(data || []);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
-    const [selectedCandidate, setSelectedCandidate] = useState(null);
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
 
-
-    const toggleCurriculo = (candidato) => {
+    const toggleCurriculo = (candidato:Candidato) => {
         setSelectedCandidate(candidato);
         setTimeout(() => {
             setModalClass("scale-100 opacity-100");
@@ -140,7 +150,7 @@ function Page(){
         router.push('/Ranking')
     }
 
-    const ordenarPorAptidao = (lista) => {
+    const ordenarPorAptidao = (lista: Candidato[]) => {
         return [...lista].sort((a, b) => b.aptidao - a.aptidao);
     };
     return(
@@ -199,7 +209,7 @@ function Page(){
                     </div>
                     <div className="space-y-4 text-md w-full">
                         <div>
-                            
+                            {selectedCandidate.motivo}
                         </div>
                     </div>
                 </div>

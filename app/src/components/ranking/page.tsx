@@ -5,6 +5,17 @@ import { ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useData } from "@/Context/AppContext";
 
+interface Candidato {
+    nome: string;
+    email: string;
+    telefone: string;
+    idade: number;
+    aptidao: number;
+    motivo: string;
+    vaga: number;
+    foto: string;
+}
+
 const Candidatos = [
     {
         "nome": "João",
@@ -111,20 +122,31 @@ const Candidatos = [
 function Page(){
     const router = useRouter();
     const { data } = useData();
-    const [selectedCandidate, setSelectedCandidate] = useState(null);
     const [isOpen, setIsOpen] = useState(true);
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
+    const [modalClass, setModalClass] = useState("scale-0 opacity-0");
 
-    const ordenarPorAptidao = (lista) => {
-        return [...lista].sort((a, b) => b.aptidao - a.aptidao);
+    const ordenarPorAptidao = (lista:Candidato[]) => {
+        return [...lista]
+        .filter(candidato => candidato.aptidao > 50)
+        .sort((a, b) => b.aptidao - a.aptidao );
     };
     
     const returnHome = () => {
         router.push('/')
     }
 
-    const toggleCurriculo = (candidato) => {
+    const toggleCurriculo = (candidato:Candidato) => {
         setSelectedCandidate(candidato);
-        setIsOpen(true);
+        setTimeout(() => {
+            setModalClass("scale-100 opacity-100");
+        }, 10);
+    };
+    const closeModal = () => {
+        setModalClass("scale-0 opacity-0");
+        setTimeout(() => {
+            setSelectedCandidate(null);
+        }, 200);
     };
 
     return(
@@ -136,7 +158,7 @@ function Page(){
                     {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
                     <div className="">
                         <div className="flex w-full justify-between">
-                            <h1><b className="mr-1">Candidato Top:</b> {index + 1}</h1>
+                            <h1><b className="mr-1">N°:</b> {index + 1}</h1>
                             <div className="flex">
                                 <tr className="mr-2 font-bold">nome:</tr>
                                 <td>{candidato.nome}</td>
@@ -162,10 +184,10 @@ function Page(){
                 ))}
             </div>
 
-            {isOpen && selectedCandidate && (
-            <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center text-slate-800" onClick={() => setIsOpen(false)}>
-                <div className="w-3xl max-h-9/12 bg-white p-10 overflow-auto rounded-xl shadow-xl relative">
-                    <button className="absolute top-4 right-4 text-red-600 hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>X</button>
+            {selectedCandidate && (
+            <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center text-slate-800" onClick={closeModal}>
+                <div className={`transform transition-all duration-200 ease-out ${modalClass} w-3xl max-h-9/12 bg-white p-10 overflow-auto rounded-xl shadow-xl relative`} onClick={(e) => e.stopPropagation()}>
+                    <button className="absolute top-4 right-4 text-red-600 hover:text-red-500 cursor-pointer" onClick={closeModal}>X</button>
                     <div className="flex items-start pb-4 border-b border-gray-400 mb-7">
                         <img
                             src=""
@@ -180,7 +202,7 @@ function Page(){
                     </div>
                     <div className="space-y-4 text-md w-full">
                         <div>
-                            
+                            {selectedCandidate.motivo}
                         </div>
                     </div>
                 </div>
