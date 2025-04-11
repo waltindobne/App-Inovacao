@@ -2,6 +2,7 @@
 import { SendHorizonal , ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
+import { useData } from "@/Context/AppContext";
 
 const Candidatos = [
     {
@@ -110,46 +111,69 @@ const Candidatos = [
 
 function Page(){
     const router = useRouter();
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
+    const { data } = useData();
+    const [ Result, setResult ] = useState(data || []);
+    const [modalClass, setModalClass] = useState("scale-0 opacity-0");
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
 
-    const toggleCurriculo = () => setIsOpen(!isOpen);
+
+    const toggleCurriculo = (candidato) => {
+        setSelectedCandidate(candidato);
+        setTimeout(() => {
+            setModalClass("scale-100 opacity-100");
+        }, 10);
+    };
+    const closeModal = () => {
+        setModalClass("scale-0 opacity-0");
+        setTimeout(() => {
+            setSelectedCandidate(null);
+        }, 200);
+    };
+    
+    
 
     const returnHome = () => {
         router.push('/')
+    }
+    const handleToRanking = () => {
+        router.push('/Ranking')
     }
 
     const ordenarPorAptidao = (lista) => {
         return [...lista].sort((a, b) => b.aptidao - a.aptidao);
     };
     return(
-        <div>
-            <button className="" onClick={returnHome}><ArrowBigLeft/>Home</button>
-            <h1 className="">Candidatos Aptos - {Candidatos.length}</h1>
-            <div className="">
-                {ordenarPorAptidao(Candidatos).map((candidato, index) => (
-                <button onClick={toggleCurriculo} className="" key={index}>
-                    {/*<img src={candidato.foto} alt="" />*/}
-                    {Candidatos.length}
+        <div className="w-4/5 mx-auto my-10">
+            <div className=" w-full flex justify-center items-center mb-10">
+                <h1 className="text-blue-900 text-2xl mr-4">Lista de Candidatos - {Candidatos.length}</h1>
+                <button className="px-4 py-2 bg-gray-200 border-2 border-blue-900 rounded-lg text-blue-900 font-bold hover:bg-blue-900 hover:text-white cursor-pointer" onClick={handleToRanking}>Gerar Ranking</button>
+            </div>
+            <div className="w-full mt-4 flex flex-wrap justify-center items-center">
+                {Candidatos.map((candidato, index) => (
+                <button onClick={() => toggleCurriculo(candidato)} className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer  transition duration-200 ease-in-out" key={index}>
+                    {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
                     <div className="">
-                        <h1></h1>
-                        <div className="">
-                            <tr>nome:</tr>
-                            <td>{candidato.nome}</td>
+                        <div className="flex w-full justify-between">
+                            <h1><b className="mr-1">N° Candidato:</b> {index + 1}</h1>
+                            <div className="flex">
+                                <tr className="mr-2 font-bold">nome:</tr>
+                                <td>{candidato.nome}</td>
+                            </div>
+                            {/*<div className={styles.linha}>
+                                <tr>Email:</tr>
+                                <td>{candidato.email}</td>
+                            </div>
+                            <div className={styles.linha}>
+                                <tr>Telefone:</tr>
+                                <td>{candidato.telefone}</td>
+                            </div>*/}
+                            <div className="flex">
+                                <tr className="mr-2 font-bold">Aptidão:</tr>
+                                <td>{candidato.aptidao}%</td>
+                            </div>
                         </div>
-                        {/*<div className={styles.linha}>
-                            <tr>Email:</tr>
-                            <td>{candidato.email}</td>
-                        </div>
-                        <div className={styles.linha}>
-                            <tr>Telefone:</tr>
-                            <td>{candidato.telefone}</td>
-                        </div>*/}
-                        <div className="">
-                            <tr>Aptidão:</tr>
-                            <td>{candidato.aptidao}%</td>
-                        </div>
-                        <div className="">
-                            
+                        <div className=" mt-2">
                             <td>{candidato.motivo}</td>
                         </div>
                     </div>
@@ -157,52 +181,30 @@ function Page(){
                 ))}
             </div>
 
-
-
-
-
-            {isOpen && (
-            <div className="">
-                <div className="">
-                    <div className="">
-                        <div className="flex">
-                            <img src="https://media.licdn.com/dms/image/v2/D4D03AQE-gQEecOmEyg/profile-displayphoto-shrink_200_200/B4DZQgPyT.HwAY-/0/1735707797234?e=2147483647&v=beta&t=QXYg9A1fyjKX2FgWFC4p2eWl5-lGr6CvhkTgl1oaWGI" alt="" />
-                            <div className="">
-                                <div className="">
-                                    <tr>nome:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                                <div className="">
-                                    <tr>Email:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                                <div className="">
-                                    <tr>Telefone:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                                <div className="">
-                                    <tr>Vaga:</tr>
-                                    <td>joão silva</td>
-                                </div>
-                            </div>
+            {selectedCandidate && (
+            <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center text-slate-800" onClick={closeModal}>
+                <div className={`transform transition-all duration-200 ease-out ${modalClass} w-3xl max-h-9/12 bg-white p-10 overflow-auto rounded-xl shadow-xl relative`} onClick={(e) => e.stopPropagation()}>
+                    <button className="absolute top-4 right-4 text-red-600 hover:text-red-500 cursor-pointer" onClick={closeModal}>X</button>
+                    <div className="flex items-start pb-4 border-b border-gray-400 mb-7">
+                        <img
+                            src=""
+                            alt=""
+                            className="w-24 h-24 rounded-full mr-10"
+                        />
+                        <div className="text-sm space-y-2">
+                            <div><b>Nome:</b></div>
+                            <div><b>Email:</b> </div>
+                            <div><b>Telefone:</b></div>
                         </div>
-                        <button onClick={toggleCurriculo}>X</button>
-                    </div><br /><hr /><br />
-                    <div className="">
-                        <b>1- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>2- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>3- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>4- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                        <b>5- Lorem ipsum dolor sit amet consectetur adipisicing elit.</b>
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam fugiat velit consequuntur adipisci temporibus reiciendis.</p>
-                    </div>  
+                    </div>
+                    <div className="space-y-4 text-md w-full">
+                        <div>
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
-             )}
+            )}
         </div>
     )
 }

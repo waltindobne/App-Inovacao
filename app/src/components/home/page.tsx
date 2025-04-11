@@ -33,7 +33,7 @@ function Page(){
             <h1 className="w-full flex justify-center text-sky-900 text-2xl py-3">Vagas Disponiveis - {Vagas.length}</h1>
             <div className="w-full flex flex-wrap justify-center">
                 {Vagas.map((vaga, index) => (
-                <button onClick={toggleCandidatos} className="w- m-2 p-4 flex text-slate-900 bg-gray-200 border-2 border-blue-900 rounded-lg hover:bg-blue-900 hover:text-white" key={index}>
+                <button onClick={toggleCandidatos} className="w- m-2 p-4 flex text-slate-900 bg-white border-2 border-blue-900 rounded-2xl hover:bg-slate-200 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index}>
                     <img src={vaga.foto} alt="" className="w-60 rounded-md"/>
                     <div className="w-60 mx-4 flex flex-col items-start">
                         <div className="w-full flex border-b border-gray-400">

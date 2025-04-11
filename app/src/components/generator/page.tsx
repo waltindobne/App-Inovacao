@@ -33,12 +33,11 @@ function Page(){
         perguntas: "",
         respostas: ""
     });
-    /*
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormValues({ ...formValues, [name]: value });
     };
-    
+    /*
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -55,50 +54,52 @@ function Page(){
         });
 
         console.log("Dados atualizados no contexto!");
+        router.push("/questions")
     };*/
+    
     const handleChangeSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             let novasPerguntas = [...perguntas];
-            while (novasPerguntas.length < 10) {
-                const response = await InovaService.gerarQuest(numQuest, vaga, novasPerguntas);
-                console.log(response.data);
-        
-                novasPerguntas.push(`${novasPerguntas.length + 1} - Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae?`);
-                console.log(novasPerguntas);
-        
-                setPerguntas([...novasPerguntas]);
+            while (novasPerguntas.length < 3) {
+                novasPerguntas.push(`${novasPerguntas.length + 1} - Lorem ipsum dolor sit amet...`);
             }
+    
+            setData({
+                ...data,
+                vaga,
+                curriculo,
+                anotacoes,
+                transcricao,
+                relatorios: formValues.relatorios,
+                perguntas: novasPerguntas,
+                respostas: formValues.respostas
+            });
+    
+            setPerguntas(novasPerguntas);
+    
+            console.log("Dados atualizados no contexto!", {
+                ...data,
+                perguntas: novasPerguntas
+            });
+    
+            router.push('/questions');
         } catch (error) {
             console.error('Erro ao gerar perguntas:', error);
         }
-        
-        setData({
-            ...data,
-            vaga,
-            curriculo,
-            anotacoes,
-            transcricao,
-            relatorios: formValues.relatorios,
-            perguntas,
-            respostas: formValues.respostas
-        });
-    
-        console.log("Dados atualizados no contexto!", data);
-        router.push('/questions');
     };
     
 
 
     return (
         <div className="w-full flex justify-center">
-            <div className="w-3/5 mt-10">
+            <div className="w-3/5 my-10">
                 <form method="post" onSubmit={handleChangeSubmit} className="w-full p-8 bg-gray-100 rounded-2xl border-2 border-blue-900 text-slate-800 flex flex-col">
-                    <h1 className="text-xl text-blue-900 mb-4">Dados do Candidato</h1>
+                    <h1 className="text-2xl text-blue-900 mb-4">Dados do Candidato</h1>
                     <div className="">
                         <div className="mb-3">
                             <label htmlFor="vaga" className="font-bold">Vaga:</label>
-                            <select name="" id="" className="w-full p-2 bg-white border border-slate-400 rounded-lg">
+                            <select name="" id="" className="w-full p-2 bg-white border border-slate-400 rounded-lg outline-0">
                                 <option value="">vaga1</option>
                                 <option value="">vaga2</option>
                                 <option value="">vaga3</option>
@@ -106,39 +107,40 @@ function Page(){
                             </select>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="curriculo" className="font-bold">Coloque seu curriculo aqui:</label>
+                            <label htmlFor="curriculo" className="font-bold">Descreva o curriculo aqui:</label>
                             <textarea 
                                 name="curriculo" 
                                 id="" 
                                 placeholder="Digite aqui" 
                                 value={curriculo} 
                                 onChange={(e) => setCurriculo(e.target.value)}
-                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg"
+                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg outline-0"
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="anotacao" className="font-bold">Coloque suas Anotações aqui</label>
+                            <label htmlFor="anotacao" className="font-bold">Coloque suas Anotações aqui:</label>
                             <textarea 
                                 name="anotacao" 
                                 id="" 
                                 placeholder="Digite aqui" 
                                 value={anotacoes} 
                                 onChange={(e) => setAnotacoes(e.target.value)}
-                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg"
+                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg outline-0"
                             />
                         </div>
-                        <div>
-                            <label htmlFor="transcricao">Coloque suas Transcrições aqui</label>
+                        <div className="mb-3">
+                            <label htmlFor="transcricao" className="font-bold">Coloque suas Transcrições aqui:</label>
                             <textarea 
                                 name="trascricao" 
                                 id="" 
                                 placeholder="Digite aqui" 
                                 value={transcricao} 
                                 onChange={(e) => setTranscricao(e.target.value)}
+                                className="w-full p-2 min-h-24 max-h-24 bg-white border border-slate-400 rounded-lg outline-0"
                             />
                         </div>
-                        <div className="">
-                            <button type="submit">Enviar <SendHorizonal/></button>
+                        <div className="w-full">
+                            <button type="submit" className="w-full p-2 bg-white border-2 border-green-500 flex justify-center rounded-lg hover:bg-green-500 hover:text-white cursor-pointer"><p className="pr-2 font-bold">Enviar</p> <SendHorizonal/></button>
                         </div>
                     </div>
                 </form>
