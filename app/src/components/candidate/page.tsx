@@ -3,6 +3,7 @@ import { SendHorizonal , ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
 import { useData } from "@/Context/AppContext";
+import { CandidateService } from "@/Services/WebApi";
 
 interface Candidato {
     nome: string;
@@ -14,7 +15,7 @@ interface Candidato {
     vaga: number;
     foto: string;
 }
-
+/*
 const Candidatos = [
     {
         "nome": "João",
@@ -117,7 +118,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/47.jpg"
     }
 ];
-
+*/
 
 
 function Page(){
@@ -126,8 +127,16 @@ function Page(){
     const { data } = useData();
     const [ Result, setResult ] = useState(data || []);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
+
+    const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
 
+    const returnHome = () => {
+        router.push('/')
+    }
+    const handleToRanking = () => {
+        router.push('/Ranking')
+    }
     const toggleCurriculo = (candidato:Candidato) => {
         setSelectedCandidate(candidato);
         setTimeout(() => {
@@ -140,15 +149,17 @@ function Page(){
             setSelectedCandidate(null);
         }, 200);
     };
-    
-    
 
-    const returnHome = () => {
-        router.push('/')
-    }
-    const handleToRanking = () => {
-        router.push('/Ranking')
-    }
+    useEffect(() => {
+        CandidateService.GetAllCandidates()
+            .then((response) => {
+                console.log(response.data);
+                setCandidates(response.data);
+            })
+            .catch((error) => {
+                console.log('Erro ao tentar listar candidatos:', error)
+            })
+    }, [])
 
     const ordenarPorAptidao = (lista: Candidato[]) => {
         return [...lista].sort((a, b) => b.aptidao - a.aptidao);
@@ -156,11 +167,11 @@ function Page(){
     return(
         <div className="w-4/5 mx-auto my-10">
             <div className=" w-full flex justify-center items-center mb-10">
-                <h1 className="text-blue-900 text-2xl mr-4">Lista de Candidatos - {Candidatos.length}</h1>
+                <h1 className="text-blue-900 text-2xl mr-4">Lista de Candidatos - {candidates.length}</h1>
                 <button className="px-4 py-2 bg-gray-200 border-2 border-blue-900 rounded-lg text-blue-900 font-bold hover:bg-blue-900 hover:text-white cursor-pointer" onClick={handleToRanking}>Gerar Ranking</button>
             </div>
             <div className="w-full mt-4 flex flex-wrap justify-center items-center">
-                {Candidatos.map((candidato, index) => (
+                {candidates.map((candidato, index) => (
                 <button onClick={() => toggleCurriculo(candidato)} className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer  transition duration-200 ease-in-out" key={index}>
                     {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
                     <div className="">

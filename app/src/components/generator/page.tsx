@@ -2,7 +2,7 @@
 import {useState, useEffect} from "react";
 import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { InovaService } from "@/Services/WebApi";
+import { QuestionService } from "@/Services/WebApi";
 import { useData } from "@/Context/AppContext";
 
 interface DataQuest{
@@ -24,6 +24,7 @@ function Page(){
     const [ transcricao, setTranscricao] = useState('')
     const [ curriculo, setCurriculo] = useState('')
     const [perguntas, setPerguntas] = useState<string[]>([]);
+    const [quantidadePerguntas, setQuantidadesPerguntas] = useState(10)
     const [formValues, setFormValues] = useState({
         vaga: "",
         curriculo: "",
@@ -61,7 +62,7 @@ function Page(){
         e.preventDefault();
         try {
             let novasPerguntas = [...perguntas];
-            while (novasPerguntas.length < 3) {
+            while (novasPerguntas.length < quantidadePerguntas) {
                 novasPerguntas.push(`${novasPerguntas.length + 1} - Lorem ipsum dolor sit amet...`);
             }
     

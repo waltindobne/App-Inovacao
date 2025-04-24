@@ -4,6 +4,7 @@ import axios from "axios";
 import { ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useData } from "@/Context/AppContext";
+import { CandidateService } from "@/Services/WebApi";
 
 interface Candidato {
     nome: string;
@@ -15,7 +16,7 @@ interface Candidato {
     vaga: number;
     foto: string;
 }
-
+/*
 const Candidatos = [
     {
         "nome": "João",
@@ -117,12 +118,14 @@ const Candidatos = [
         "vaga": 10,
         "foto": "https://randomuser.me/api/portraits/women/47.jpg"
     }
-];
+];*/
 
 function Page(){
     const router = useRouter();
     const { data } = useData();
     const [isOpen, setIsOpen] = useState(true);
+
+    const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
 
@@ -135,6 +138,17 @@ function Page(){
     const returnHome = () => {
         router.push('/')
     }
+
+    useEffect(() => {
+        CandidateService.GetAllCandidates()
+            .then((response) => {
+                console.log(response.data);
+                setCandidates(response.data);
+            })
+            .catch((error) => {
+                console.log('Erro ao tentar listar candidatos:', error)
+            })
+    }, [])
 
     const toggleCurriculo = (candidato:Candidato) => {
         setSelectedCandidate(candidato);
@@ -151,9 +165,9 @@ function Page(){
 
     return(
         <div className="w-4/5 mx-auto my-10">
-            <h1 className="w-full flex justify-center text-2xl text-blue-900">Ranking Candidatos</h1>
+            <h1 className="w-full flex justify-center text-2xl text-blue-900">Ranking Candidatos - {ordenarPorAptidao(candidates).length}</h1>
             <div className="w-full mt-4 flex flex-wrap justify-center items-center">
-                {ordenarPorAptidao(Candidatos).map((candidato, index) => (
+                {ordenarPorAptidao(candidates).map((candidato, index) => (
                 <button className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index} onClick={() => toggleCurriculo(candidato)}>
                     {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
                     <div className="">

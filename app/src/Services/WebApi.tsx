@@ -1,11 +1,12 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL : "https://smart.bne.com.br",
+    baseURL : "https://localhost:",
     headers: {
         'Content-Type': 'application/json'
     }
 })
+/*
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = "79B43F11-F111-44BF-8946-DC4D957E3810";
@@ -23,41 +24,53 @@ axiosInstance.interceptors.request.use(
     (error) => {
         return Promise.reject(error);
     }
-);
-export class InovaService {
-    static gerarQuest(numQuest: number, vaga: string, perguntas: object){
-        return axiosInstance.post(`/Entrevistador/EntrevistaCV/${numQuest}`,{
-            perguntas: [
-                perguntas
-            ],
-            respostas: "string",
-            vaga: vaga,
-            curriculo: "string",
-            anotacoes: "string",
-            transcricao: "string",
-            relatorios: "string"
-        })
+);*/
+export class CandidateService {
+    static GetAllCandidates(){
+        return axiosInstance.get('/Candidate/GetAllCandidates');
     }
-    static respostasQuest(numCandidato: number, vaga: string, perguntas: object){
-        return axiosInstance.post(`/Entrevistador/Relatorio/${numCandidato}`,{
-            perguntas: [
-                perguntas
-            ],
-            respostas: "string",
-            vaga: vaga,
-            curriculo: "string",
-            anotacoes: "string",
-            transcricao: "string",
-            relatorios: "string"
-        })
+    static GetCandidateById(){
+        return axiosInstance.get('/Candidate/GetCandidateById')
     }
-    static rankingCandidatos( vaga: string, relatorios: string){
-        return axiosInstance.post(`/Entrevistador/Ranking/`,{
-            vaga: vaga,
-            curriculo: "string",
-            anotacoes: "string",
-            transcricao: "string",
-            relatorios: relatorios
-        })
+    static CreateCandidate(){
+        return axiosInstance.post('/Candidate/CreateCandidate');
+    }
+}
+export class CandidatureService {
+    static GetAllCandidatures(){
+        return axiosInstance.get('/Candidature/GetAllCandidatures');
+    }
+    static CreateCandidature(){
+        return axiosInstance.post('/Candidature/CreateCandidature');
+    }
+}
+export class QuestionService {
+    static GetAllQuestions(){
+        return axiosInstance.get('/Questions/GetAllQuestions');
+    }
+    static CreateQuestionsWithIA(){
+        return axiosInstance.post('/Questions/CreateQuestionsWithIA');
+    }
+    static CreateQuestions(){
+        return axiosInstance.post('/Questions/CreateQuestion');
+    }
+}
+export class ResponseService {
+    static GetResponseByQuestionId(){
+        return axiosInstance.get('/Questions/GetResponseByQuestionId');
+    }
+    static GetResponseByCandidatureId(){
+        return axiosInstance.get('/Questions/GetResponseByCandidatureId');
+    }
+    static CreateResponse(){
+        return axiosInstance.post('/Questions/CreateResponse');
+    }
+}
+export class VacancyService {
+    static GetAllVacancies(){
+        return axiosInstance.get('/Vacancy/GetAllVacancies');
+    }
+    static CreateVacancy(){
+        return axiosInstance.post('/Vacancy/CreateVacancy');
     }
 }

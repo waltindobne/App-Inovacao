@@ -2,8 +2,9 @@
 import { SendHorizonal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
+import { VacancyService } from "@/Services/WebApi";
 
-const Vagas = [
+/*const Vagas = [
     {
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH-Xu2k0C4wdc35bq-r9uI1813kclztywZhw&s",
         "vaga": "Desenvolvedor Frontend",
@@ -18,11 +19,23 @@ const Vagas = [
         "salario": 4500,
         "requisitos": "c#, sql, github, azure"
     }
-];
+];*/
 
 function Page(){
     const router = useRouter();
+    const [vagas, setVagas] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        VacancyService.GetAllVacancies()
+            .then((response) => {
+                console.log(response.data);
+                setVagas(response.data);
+            })
+            .catch((error) => {
+                console.error('Erro ao listar as vagas:', error);
+            })
+    }, []);
 
     const toggleCandidatos = () => {
         router.push('/candidate')
@@ -30,9 +43,9 @@ function Page(){
 
     return(
         <div className="w-4/5 mx-auto my-10">
-            <h1 className="w-full flex justify-center text-sky-900 text-2xl py-3">Vagas Disponiveis - {Vagas.length}</h1>
+            <h1 className="w-full flex justify-center text-sky-900 text-2xl py-3">Vagas Disponiveis - {vagas.length}</h1>
             <div className="w-full flex flex-wrap justify-center">
-                {Vagas.map((vaga, index) => (
+                {vagas.map((vaga, index) => (
                 <button onClick={toggleCandidatos} className="w- m-2 p-4 flex text-slate-900 bg-white border-2 border-blue-900 rounded-2xl hover:bg-slate-200 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index}>
                     <img src={vaga.foto} alt="" className="w-60 rounded-md"/>
                     <div className="w-60 mx-4 flex flex-col items-start">
