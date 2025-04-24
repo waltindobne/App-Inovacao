@@ -6,6 +6,7 @@ import { useData } from "@/Context/AppContext";
 import { CandidateService } from "@/Services/WebApi";
 
 interface Candidato {
+    id: number;
     nome: string;
     email: string;
     telefone: string;
@@ -15,9 +16,10 @@ interface Candidato {
     vaga: number;
     foto: string;
 }
-/*
-const Candidatos = [
+
+const candidates = [
     {
+        "id": 1,
         "nome": "João",
         "email": "joao@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -28,6 +30,7 @@ const Candidatos = [
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs6NOtbwDZZAe8GpwIjUTq2WYn_ExYBshhhQ&s"
     },
     {
+        "id": 2,
         "nome": "Maria",
         "email": "maria@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -38,6 +41,7 @@ const Candidatos = [
         "foto": "https://i0.wp.com/blog.infojobs.com.br/wp-content/uploads/2023/08/aproximacao-de-uma-jovem-profissional-feminina-fazendo-contato-visual-contra-o-fundo-colorido.jpg?resize=604%2C403&ssl=1"
     },
     {
+        "id": 3,
         "nome": "Carlos",
         "email": "carlos@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -48,6 +52,7 @@ const Candidatos = [
         "foto": "https://f.i.uol.com.br/fotografia/2025/01/28/17380813716799045bb0ffb_1738081371_3x2_md.jpg"
     },
     {
+        "id": 4,
         "nome": "Ana",
         "email": "ana@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -58,6 +63,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/44.jpg"
     },
     {
+        "id": 5,
         "nome": "Felipe",
         "email": "felipe@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -68,6 +74,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/men/44.jpg"
     },
     {
+        "id": 6,
         "nome": "Juliana",
         "email": "juliana@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -78,6 +85,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/45.jpg"
     },
     {
+        "id": 7,
         "nome": "Ricardo",
         "email": "ricardo@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -88,6 +96,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/men/45.jpg"
     },
     {
+        "id": 8,
         "nome": "Carolina",
         "email": "carolina@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -98,6 +107,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/46.jpg"
     },
     {
+        "id": 9,
         "nome": "Marcos",
         "email": "marcos@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -108,6 +118,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/men/46.jpg"
     },
     {
+        "id": 10,
         "nome": "Beatriz",
         "email": "beatriz@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -118,17 +129,28 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/47.jpg"
     }
 ];
-*/
+
 
 
 function Page(){
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(true);
-    const { data } = useData();
+    const { data, setData } = useData();
     const [ Result, setResult ] = useState(data || []);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
 
-    const [candidates, setCandidates] = useState([]);
+    const toggleEntrevista = (candidateData: Candidato) => {
+        if (!setData) return;
+        
+        setData((prevData: Data) => ({
+            ...prevData,
+            curriculo: [candidateData]
+        }));
+        
+        router.push('/generator')
+    };
+
+    //const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
 
     const returnHome = () => {
@@ -138,10 +160,13 @@ function Page(){
         router.push('/Ranking')
     }
     const toggleCurriculo = (candidato:Candidato) => {
-        setSelectedCandidate(candidato);
-        setTimeout(() => {
-            setModalClass("scale-100 opacity-100");
+        setSelectedCandidate(candidato)
+        localStorage.setItem('idCandidate', candidato.id)
+        router.push('/generator')
+        /*setTimeout(() => {
+            setModalClass("scale-100 opacity-100")
         }, 10);
+        */
     };
     const closeModal = () => {
         setModalClass("scale-0 opacity-0");
@@ -150,7 +175,7 @@ function Page(){
         }, 200);
     };
 
-    useEffect(() => {
+    /*useEffect(() => {
         CandidateService.GetAllCandidates()
             .then((response) => {
                 console.log(response.data);
@@ -159,7 +184,7 @@ function Page(){
             .catch((error) => {
                 console.log('Erro ao tentar listar candidatos:', error)
             })
-    }, [])
+    }, [])*/
 
     const ordenarPorAptidao = (lista: Candidato[]) => {
         return [...lista].sort((a, b) => b.aptidao - a.aptidao);
@@ -172,7 +197,7 @@ function Page(){
             </div>
             <div className="w-full mt-4 flex flex-wrap justify-center items-center">
                 {candidates.map((candidato, index) => (
-                <button onClick={() => toggleCurriculo(candidato)} className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer  transition duration-200 ease-in-out" key={index}>
+                <button onClick={() => toggleEntrevista(candidato)} className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer  transition duration-200 ease-in-out" key={index}>
                     {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
                     <div className="">
                         <div className="flex w-full justify-between">

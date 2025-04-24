@@ -16,9 +16,10 @@ interface Candidato {
     vaga: number;
     foto: string;
 }
-/*
-const Candidatos = [
+
+const candidates = [
     {
+        "id": 1,
         "nome": "João",
         "email": "joao@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -29,6 +30,7 @@ const Candidatos = [
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs6NOtbwDZZAe8GpwIjUTq2WYn_ExYBshhhQ&s"
     },
     {
+        "id": 2,
         "nome": "Maria",
         "email": "maria@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -39,6 +41,7 @@ const Candidatos = [
         "foto": "https://i0.wp.com/blog.infojobs.com.br/wp-content/uploads/2023/08/aproximacao-de-uma-jovem-profissional-feminina-fazendo-contato-visual-contra-o-fundo-colorido.jpg?resize=604%2C403&ssl=1"
     },
     {
+        "id": 3,
         "nome": "Carlos",
         "email": "carlos@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -49,6 +52,7 @@ const Candidatos = [
         "foto": "https://f.i.uol.com.br/fotografia/2025/01/28/17380813716799045bb0ffb_1738081371_3x2_md.jpg"
     },
     {
+        "id": 4,
         "nome": "Ana",
         "email": "ana@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -59,6 +63,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/44.jpg"
     },
     {
+        "id": 5,
         "nome": "Felipe",
         "email": "felipe@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -69,6 +74,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/men/44.jpg"
     },
     {
+        "id": 6,
         "nome": "Juliana",
         "email": "juliana@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -79,6 +85,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/45.jpg"
     },
     {
+        "id": 7,
         "nome": "Ricardo",
         "email": "ricardo@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -89,6 +96,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/men/45.jpg"
     },
     {
+        "id": 8,
         "nome": "Carolina",
         "email": "carolina@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -99,6 +107,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/women/46.jpg"
     },
     {
+        "id": 9,
         "nome": "Marcos",
         "email": "marcos@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -109,6 +118,7 @@ const Candidatos = [
         "foto": "https://randomuser.me/api/portraits/men/46.jpg"
     },
     {
+        "id": 10,
         "nome": "Beatriz",
         "email": "beatriz@gmail.com",
         "telefone": "(41) 9 8765 4321",
@@ -118,14 +128,14 @@ const Candidatos = [
         "vaga": 10,
         "foto": "https://randomuser.me/api/portraits/women/47.jpg"
     }
-];*/
+];
 
 function Page(){
     const router = useRouter();
     const { data } = useData();
     const [isOpen, setIsOpen] = useState(true);
 
-    const [candidates, setCandidates] = useState([]);
+    //const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
 
@@ -139,7 +149,7 @@ function Page(){
         router.push('/')
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         CandidateService.GetAllCandidates()
             .then((response) => {
                 console.log(response.data);
@@ -148,7 +158,7 @@ function Page(){
             .catch((error) => {
                 console.log('Erro ao tentar listar candidatos:', error)
             })
-    }, [])
+    }, [])*/
 
     const toggleCurriculo = (candidato:Candidato) => {
         setSelectedCandidate(candidato);
