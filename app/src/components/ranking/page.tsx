@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ArrowBigLeft } from "lucide-react";
+import { ArrowBigLeft, FileUser } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useData } from "@/Context/AppContext";
+import { useData, Vaga } from "@/Context/AppContext";
 import { CandidateService } from "@/Services/WebApi";
 
 interface Candidato {
@@ -129,15 +129,36 @@ const candidates = [
         "foto": "https://randomuser.me/api/portraits/women/47.jpg"
     }
 ];
+const vagas:Vaga[] = [
+    {
+        "id": 1,
+        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH-Xu2k0C4wdc35bq-r9uI1813kclztywZhw&s",
+        "vaga": "Desenvolvedor Frontend",
+        "quantidade": 2,
+        "salario": 4000,
+        "requisitos": "html, css, javascript, react, tailwind"
+    },
+    {
+        "id": 2,
+        "foto": "https://i.pinimg.com/564x/b4/00/bb/b400bba24a3ac713c5611facf4376d7e.jpg",
+        "vaga": "Desenvolvedor Backend",
+        "quantidade": 3,
+        "salario": 4500,
+        "requisitos": "c#, sql, github, azure"
+    }
+];
 
 function Page(){
     const router = useRouter();
-    const { data } = useData();
     const [isOpen, setIsOpen] = useState(true);
-
-    //const [candidates, setCandidates] = useState([]);
-    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
+    const { data, setData } = useData();
+    console.log(data);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
+    const [perguntas, setPerguntas] = useState<string[]>(data.perguntas || []);
+    const [respostas, setRespostas] = useState<string[]>(data.respostas || []);
+
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
+    const [selectedVaga, setSelectedVaga] = useState<Vaga | null>(null);
 
     const ordenarPorAptidao = (lista:Candidato[]) => {
         return [...lista]
@@ -160,12 +181,30 @@ function Page(){
             })
     }, [])*/
 
-    const toggleCurriculo = (candidato:Candidato) => {
-        setSelectedCandidate(candidato);
-        setTimeout(() => {
-            setModalClass("scale-100 opacity-100");
-        }, 10);
-    };
+    const OpenCV = (e: React.MouseEvent, candidato: Candidato) => {
+            e.stopPropagation();
+            setSelectedCandidate(candidato);
+            const idVaga = localStorage.getItem('idVaga');
+            
+            if (idVaga) {
+                const vagaEncontrada = vagas.find(v => v.id === parseInt(idVaga));
+                setSelectedVaga(vagaEncontrada || null);
+                
+                // Carrega perguntas e respostas do contexto
+                if (data.perguntas) {
+                    setPerguntas(data.perguntas);
+                }
+                if (data.respostas) {
+                    setRespostas(data.respostas);
+                }
+            } else {
+                setSelectedVaga(null);
+            }
+            
+            setTimeout(() => {
+                setModalClass("scale-100 opacity-100");
+            }, 10);
+        };
     const closeModal = () => {
         setModalClass("scale-0 opacity-0");
         setTimeout(() => {
@@ -178,26 +217,22 @@ function Page(){
             <h1 className="w-full flex justify-center text-2xl text-blue-900">Ranking Candidatos - {ordenarPorAptidao(candidates).length}</h1>
             <div className="w-full mt-4 flex flex-wrap justify-center items-center">
                 {ordenarPorAptidao(candidates).map((candidato, index) => (
-                <button className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index} onClick={() => toggleCurriculo(candidato)}>
+                <button className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index} onClick={(e) => OpenCV(e,candidato)}>
                     {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
                     <div className="">
                         <div className="flex w-full justify-between">
                             <h1><b className="mr-1">N°:</b> {index + 1}</h1>
+                            <h1><b className="mr-1">Id:</b> {candidato.id}</h1>
                             <div className="flex">
                                 <tr className="mr-2 font-bold">nome:</tr>
                                 <td>{candidato.nome}</td>
                             </div>
-                            {/*<div className={styles.linha}>
-                                <tr>Email:</tr>
-                                <td>{candidato.email}</td>
-                            </div>
-                            <div className={styles.linha}>
-                                <tr>Telefone:</tr>
-                                <td>{candidato.telefone}</td>
-                            </div>*/}
                             <div className="flex">
                                 <tr className="mr-2 font-bold">Aptidão:</tr>
                                 <td>{candidato.aptidao}%</td>
+                            </div>
+                            <div className="flex">
+                                <button onClick={(e) => OpenCV(e,candidato)} className="mr-2 font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser/></button>
                             </div>
                         </div>
                         <div className=" mt-2">
@@ -208,26 +243,46 @@ function Page(){
                 ))}
             </div>
 
-            {selectedCandidate && (
+            {selectedCandidate && selectedVaga && (
             <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center text-slate-800" onClick={closeModal}>
-                <div className={`transform transition-all duration-200 ease-out ${modalClass} w-3xl max-h-9/12 bg-white p-10 overflow-auto rounded-xl shadow-xl relative`} onClick={(e) => e.stopPropagation()}>
+                <div className={`transform transition-all duration-200 ease-out ${modalClass} w-3xl max-h-full bg-white p-10 overflow-auto shadow-xl relative`} onClick={(e) => e.stopPropagation()}>
                     <button className="absolute top-4 right-4 text-red-600 hover:text-red-500 cursor-pointer" onClick={closeModal}>X</button>
                     <div className="flex items-start pb-4 border-b border-gray-400 mb-7">
-                        <img
-                            src=""
-                            alt=""
-                            className="w-24 h-24 rounded-full mr-10"
-                        />
                         <div className="text-sm space-y-2">
-                            <div><b>Nome:</b></div>
-                            <div><b>Email:</b> </div>
-                            <div><b>Telefone:</b></div>
+                            <div className="flex text-lg">
+                                <b className="mr-2">Nome:</b>
+                                <p>{selectedCandidate.nome}</p>
+                            </div>
+                            <div className="flex text-lg">
+                                <b className="mr-2">Email:</b>
+                                <p>{selectedCandidate.email}</p>
+                            </div>
+                            <div className="flex text-lg">
+                                <b className="mr-2">Idade:</b>
+                                <p>{selectedCandidate.idade}</p>
+                            </div>
                         </div>
                     </div>
                     <div className="space-y-4 text-md w-full">
                         <div>
                             {selectedCandidate.motivo}
                         </div>
+                    </div>
+                    <div className="mt-8 pt-8 border border-gray-500">
+                    {perguntas.map((pergunta, index) => {
+                        const respostaCorrespondente = respostas[index] || "Nenhuma resposta fornecida";
+                        
+                        return (
+                            <div key={`pergunta-${index}`} className="question-item mb-4">
+                                <div className="question font-medium">
+                                    Pergunta {index + 1}: {pergunta}
+                                </div>
+                                <div className="answer ml-4 text-gray-600">
+                                    Resposta: {respostaCorrespondente}
+                                </div>
+                            </div>
+                        );
+                    })}
                     </div>
                 </div>
             </div>

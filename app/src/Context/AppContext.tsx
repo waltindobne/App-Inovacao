@@ -1,46 +1,83 @@
 "use client"
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-interface DataContextType {
-    data: Data;
-    setData: (newData: Data) => void;
+export interface Vaga {
+    id: number;
+    foto: string;
+    vaga: string;
+    quantidade: number;
+    salario: number;
+    requisitos: string;
+}
+
+export interface Candidato {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    idade: number;
+    aptidao: number;
+    motivo: string;
+    vaga: number;
+    foto: string;
 }
 
 interface Data {
-    perguntas: string[] | null;
-    respostas: string | null;
-    vaga: string[] | null;
-    curriculo: string[] | null;
-    anotacoes: string | null;
-    transcricao: string | null;
-    relatorios: string | null;
+    perguntas: string[];
+    respostas: string[];
+    vaga: Vaga[];
+    curriculo: Candidato[];
+    anotacoes: string;
+    transcricao: string;
+    relatorios: string;
+}
+
+interface DataContextType {
+    data: Data;
+    setData: (newData: Data | ((prev: Data) => Data)) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [data, setDataState] = useState<Data>({
+    const defaultData: Data = {
         perguntas: [],
-        respostas: "",
+        respostas: [],
         vaga: [],
         curriculo: [],
         anotacoes: "",
         transcricao: "",
         relatorios: ""
-    });
+    };
 
-    // Carrega os dados do sessionStorage quando o componente monta
+    const [data, setDataState] = useState<Data>(defaultData);
+
     useEffect(() => {
-        const storedData = sessionStorage.getItem("appData");
-        if (storedData) {
-            setDataState(JSON.parse(storedData));
+        try {
+            const storedData = localStorage.getItem("appData");
+            if (storedData && storedData !== "undefined") {
+                const parsedData = JSON.parse(storedData);
+                setDataState({
+                    ...defaultData,
+                    ...parsedData,
+                    vaga: parsedData.vaga || [],
+                    curriculo: parsedData.curriculo || [],
+                    perguntas: parsedData.perguntas || [],
+                    respostas: parsedData.respostas || []
+                });
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados do localStorage:", error);
+            localStorage.removeItem("appData"); // Limpa dados inválidos
         }
     }, []);
 
-    // Atualiza tanto o estado quanto o sessionStorage
-    const setData = (newData: Data) => {
-        setDataState(newData);
-        sessionStorage.setItem("appData", JSON.stringify(newData));
+    const setData = (newData: Data | ((prev: Data) => Data)) => {
+        setDataState(prev => {
+            const updatedData = typeof newData === 'function' ? newData(prev) : newData;
+            localStorage.setItem("appData", JSON.stringify(updatedData));
+            return updatedData;
+        });
     };
 
     return (

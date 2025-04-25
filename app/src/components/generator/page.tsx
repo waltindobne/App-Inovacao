@@ -3,29 +3,9 @@ import {useState, useEffect} from "react";
 import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { QuestionService } from "@/Services/WebApi";
-import { useData } from "@/Context/AppContext";
+import { useData, Vaga, Candidato} from "@/Context/AppContext";
 
-interface Candidato {
-    nome: string;
-    email: string;
-    telefone: string;
-    idade: number;
-    aptidao: number;
-    motivo: string;
-    vaga: number;
-    foto: string;
-}
-interface DataQuest{
-    perguntas: string[],
-    respostas: string,
-    vaga: string,
-    curriculo: string,
-    anotacoes: string,
-    transcricao: string,
-    relatorios: string
-}
-
-const candidates = [
+const candidates:Candidato[] = [
     {
         "id": 1,
         "nome": "João",
@@ -137,7 +117,7 @@ const candidates = [
         "foto": "https://randomuser.me/api/portraits/women/47.jpg"
     }
 ];
-const vagas = [
+const vagas:Vaga[] = [
     {
         "id": 1,
         "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH-Xu2k0C4wdc35bq-r9uI1813kclztywZhw&s",
@@ -159,15 +139,12 @@ const vagas = [
 function Page(){
     const router = useRouter();
     const { data, setData } = useData();
-
     console.log(data)
-    const [ vaga, setVaga] = useState([])
-    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
     const [ anotacoes, setAnotacoes] = useState('')
-    const [ transcricao, setTranscricao] = useState('')
-    const [ numQuest, setNumQuest] = useState(1);
-    const [perguntas, setPerguntas] = useState<string[]>([]);
-    const [quantidadePerguntas, setQuantidadesPerguntas] = useState(10)
+
+    const currentVaga = data.vaga && data.vaga.length > 0 ? data.vaga[0] : null;
+    const currentCandidate = data.curriculo && data.curriculo.length > 0 ? data.curriculo[0] : null;
+
     const [formValues, setFormValues] = useState({
         vaga: "",   
         anotacoes: "",
@@ -176,96 +153,68 @@ function Page(){
         perguntas: "",
         respostas: ""
     });
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormValues({ ...formValues, [name]: value });
-    };
 
-    useEffect(() => {
-        const idCandidate = localStorage.getItem('idCandidate');
-        const idVaga = localStorage.getItem('idVaga');
-      
-        if (idCandidate) {
-            const Candidate = candidates.find(x => x.id === parseInt(idCandidate));
-            const Vaga = vagas.find(x => x.id === parseInt(idVaga));
 
-            console.log(Candidate)
-            setSelectedCandidate(Candidate);
-
-            console.log(Vaga)
-            setVaga(Vaga);
-        }
-      }, []);
-
-    /*
-    const handleSubmit = (e: React.FormEvent) => {
+    const toggleAnotations = (e: React.FormEvent, anotations: string) => {
         e.preventDefault();
-
-        // Atualizando o contexto com os novos dados
-        setData({
-            ...data,
-            vaga: formValues.vaga,
-            curriculo: formValues.curriculo,
-            anotacoes: formValues.anotacoes,
-            transcricao: formValues.transcricao,
-            relatorios: formValues.relatorios,
-            perguntas: formValues.perguntas ? [formValues.perguntas] : [],
-            respostas: formValues.respostas
-        });
-
-        console.log("Dados atualizados no contexto!");
-        router.push("/questions")
-    };*/
-    
-    const handleChangeSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            let novasPerguntas = [...perguntas];
-            while (novasPerguntas.length < quantidadePerguntas) {
-                novasPerguntas.push(`${novasPerguntas.length + 1} - Lorem ipsum dolor sit amet...`);
-            }
-    
-            setData({
-                ...data,
-                vaga,
-                anotacoes,
-                transcricao,
-                relatorios: formValues.relatorios,
-                perguntas: novasPerguntas,
-                respostas: formValues.respostas
-            });
-    
-            setPerguntas(novasPerguntas);
-    
-            console.log("Dados atualizados no contexto!", {
-                ...data,
-                perguntas: novasPerguntas
-            });
-    
-            router.push('/questions');
-        } catch (error) {
-            console.error('Erro ao gerar perguntas:', error);
+        
+        const novasPerguntas: string[] = [];
+        
+        for (let i = 0; i < 10; i++) {
+            novasPerguntas.push(`${i+1} - Pergunta sobre ${currentCandidate?.nome || 'o candidato'} e a vaga de ${currentVaga?.vaga || 'Desenvolvedor'}`);
         }
-    };
     
-
+        setData(prev => ({
+            ...prev,
+            perguntas: novasPerguntas,
+            anotacoes: anotations
+        }));
+        
+        router.push('/questions');
+    };
 
     return (
         <div className="w-full flex justify-center">
             <div className="w-3/5 my-10">
-                <form method="post" onSubmit={handleChangeSubmit} className="w-full p-8 bg-gray-100 rounded-2xl border-2 border-blue-900 text-slate-800 flex flex-col">
+                <form onSubmit={(e) => toggleAnotations(e, anotacoes)} className="w-full p-8 bg-gray-100 rounded-2xl border-2 border-blue-900 text-slate-800 flex flex-col">
                     <h1 className="text-2xl text-blue-900 mb-4">Dados do Candidato</h1>
                     <div className="">
                         <div className="mb-3">
                             <label htmlFor="vaga" className="font-bold">Vaga:</label>
-                            <p>{vaga?.vaga}</p>
+                            {currentVaga ? (
+                                <div className="mt-1 p-2 bg-white rounded-lg">
+                                    <p className="font-semibold">{currentVaga.vaga}</p>
+                                    <p>Salário: R$ {currentVaga.salario.toLocaleString('pt-BR')}</p>
+                                    <p>Requisitos: {currentVaga.requisitos}</p>
+                                </div>
+                            ) : (
+                                <p className="text-red-500">Nenhuma vaga selecionada</p>
+                            )}
                         </div>
                         <div className="mb-3 flex flex-col">
                             <label htmlFor="curriculo" className="font-bold">Descreva o curriculo aqui:</label>
-                            <p>{selectedCandidate?.id}</p>
-                            <p>{selectedCandidate?.nome}</p>
-                            <p>{selectedCandidate?.email}</p>
-                            <p>{selectedCandidate?.idade}</p>
+                            {currentCandidate ? (
+                                <div className="mt-1 p-2 bg-white rounded-lg">
+                                    <div className="flex items-center">
+                                        <img 
+                                            src={currentCandidate.foto} 
+                                            alt={currentCandidate.nome} 
+                                            className="w-16 h-16 rounded-full mr-3"
+                                        />
+                                        <div>
+                                            <p className="font-semibold">{currentCandidate.nome}</p>
+                                            <p>Idade: {currentCandidate.idade} anos</p>
+                                            <p>Aptidão: {currentCandidate.aptidao}%</p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-2">
+                                        <p className="font-semibold">Motivo da seleção:</p>
+                                        <p>{currentCandidate.motivo}</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-red-500">Nenhum candidato selecionado</p>
+                            )}  
                         </div>
                         <div className="mb-3">
                             <label htmlFor="anotacao" className="font-bold">Coloque suas Anotações aqui:</label>
@@ -276,17 +225,6 @@ function Page(){
                                 value={anotacoes} 
                                 onChange={(e) => setAnotacoes(e.target.value)}
                                 className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg outline-0"
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="transcricao" className="font-bold">Coloque suas Transcrições aqui:</label>
-                            <textarea 
-                                name="trascricao" 
-                                id="" 
-                                placeholder="Digite aqui" 
-                                value={transcricao} 
-                                onChange={(e) => setTranscricao(e.target.value)}
-                                className="w-full p-2 min-h-24 max-h-24 bg-white border border-slate-400 rounded-lg outline-0"
                             />
                         </div>
                         <div className="w-full">
