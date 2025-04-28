@@ -1,6 +1,58 @@
 "use client"
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+export interface Vacancy {
+    id: number;
+    VacancyName: string;
+    Description: string;
+    VacancyCreator: string;
+}
+
+export interface Candidate {
+    id: number;
+    CandidateName: string;
+    Candidate_CV: string;
+}
+export interface Questions {
+    id: number;
+    Question: string;
+    Idf_Candidature: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+export interface Responses {
+    id: number;
+    Response: string;
+    Idf_Question: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+export interface Note {
+    id: number;
+    Note: string;
+    Idf_Candidature: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+export interface Responses {
+    id: number;
+    Response: string;
+    Idf_Question: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+
+export interface Candidature {
+    id: number;
+    TAB_Candidate: Candidate;
+    TAB_Vacancy: Vacancy;
+    TAB_Interview_Notes: Note;
+    TAB_Questions: Questions;
+    Date_Create: string;
+    Date_Update: string;
+}
+
+/**/
 export interface Vaga {
     id: number;
     foto: string;
@@ -73,11 +125,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     const setData = (newData: Data | ((prev: Data) => Data)) => {
-        setDataState(prev => {
-            const updatedData = typeof newData === 'function' ? newData(prev) : newData;
-            localStorage.setItem("appData", JSON.stringify(updatedData));
-            return updatedData;
-        });
+        
     };
 
     return (
