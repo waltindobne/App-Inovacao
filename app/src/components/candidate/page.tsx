@@ -2,10 +2,10 @@
 import { SendHorizonal , ArrowBigLeft, FileUser } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect} from "react";
-import { useData, Vaga, Candidato } from "@/Context/AppContext";
-import { CandidateService } from "@/Services/WebApi";
+import { Candidate, useData, Vacancy } from "@/Context/AppContext";
+import { CandidateService, VacancyService } from "@/Services/WebApi";
 
-const candidates:Candidato[] = [
+/*const candidates:Candidato[] = [
     {
         "id": 1,
         "nome": "João",
@@ -135,7 +135,7 @@ const vagas:Vaga[] = [
         "salario": 4500,
         "requisitos": "c#, sql, github, azure"
     }
-];
+];*/
 
 function Page(){
     const router = useRouter();
@@ -146,35 +146,47 @@ function Page(){
     const [perguntas, setPerguntas] = useState<string[]>(data.perguntas || []);
     const [respostas, setRespostas] = useState<string[]>(data.respostas || []);
 
-    const toggleEntrevista = (candidate: Candidato) => {
-            setData(prev => ({
-                ...prev,
-                curriculo: [candidate]
-            }));
-            router.push('/generator');
-        };
+    /*const toggleEntrevista = (candidate: Candidato) => {
+        setData(prev => ({
+            ...prev,
+            curriculo: [candidate]
+        }));
+        router.push('/generator');
+    };*/
 
-    //const [candidates, setCandidates] = useState([]);
-    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
-    const [selectedVaga, setSelectedVaga] = useState<Vaga | null>(null);
+    const [vagas, setVagas] = useState<Vacancy | []>([]);
+    const [candidates, setCandidates] = useState<Candidate | []>([]);
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+    const [selectedVaga, setSelectedVaga] = useState<Vacancy | null>(null);
 
-    const returnHome = () => {
-        router.push('/')
-    }
+    const toggleEntrevista = (candidate: Candidate) => {
+        localStorage.setItem('idCandidate', candidate.id)
+        router.push('/generator');
+    };
+
     const handleToRanking = () => {
         router.push('/Ranking')
     }
 
-    const OpenCV = (e: React.MouseEvent, candidato: Candidato) => {
+    const OpenCV = (e: React.MouseEvent, candidato: Candidate) => {
         e.stopPropagation();
         setSelectedCandidate(candidato);
         const idVaga = localStorage.getItem('idVaga');
         
         if (idVaga) {
+            useEffect(() => {
+                VacancyService.GetAllVacancies()
+                .then((response) => {
+                    setVagas(response.data)
+                    console.log(response.data)
+                })
+                .catch((error) => {
+                    console.log('Erro ao listar vagas:', error)
+                })
+            }, [vagas])
             const vagaEncontrada = vagas.find(v => v.id === parseInt(idVaga));
             setSelectedVaga(vagaEncontrada || null);
             
-            // Carrega perguntas e respostas do contexto
             if (data.perguntas) {
                 setPerguntas(data.perguntas);
             }
@@ -196,20 +208,10 @@ function Page(){
         }, 200);
     };
 
-    /*useEffect(() => {
-        CandidateService.GetAllCandidates()
-            .then((response) => {
-                console.log(response.data);
-                setCandidates(response.data);
-            })
-            .catch((error) => {
-                console.log('Erro ao tentar listar candidatos:', error)
-            })
-    }, [])*/
-
-    const ordenarPorAptidao = (lista: Candidato[]) => {
+    /*const ordenarPorAptidao = (lista: Candidate[]) => {
         return [...lista].sort((a, b) => b.aptidao - a.aptidao);
     };
+    */
     return(
         <div className="w-4/5 mx-auto my-10">
             <div className=" w-full flex justify-center items-center mb-10">
