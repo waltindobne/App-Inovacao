@@ -1,36 +1,34 @@
 import axios from "axios";
 
+const username = "Inovacao";
+const password = "fd7aac0b-76f5-492d-8549-d11a96b1b773";
+const basicAuth = btoa(`${username}:${password}`);
 export const axiosInstance = axios.create({
-    baseURL : "https://localhost:",
-    headers: {
-        'Content-Type': 'application/json'
-    }
-})
-/*
-axiosInstance.interceptors.request.use(
-    (config) => {
-        const token = "79B43F11-F111-44BF-8946-DC4D957E3810";
-        const clientId = "SmartBNE-API";
+  baseURL: "https://localhost:7143/",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Basic ${basicAuth}`,
+  }
+});
 
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        if (clientId) {
-            config.headers["X-Client-Id"] = clientId;
-        }
 
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);*/
 export class CandidateService {
-    static GetAllCandidates(){
-        return axiosInstance.get('/Candidate/GetAllCandidates');
+    static GetAllCandidates(VacancyId: number, origem: number){
+        return axiosInstance.get(`/Candidate/GetAllCandidates?origem=${origem}`, {
+            headers: {
+                vacancyId: VacancyId
+            }
+        });
     }
-    static GetCandidateById(){
-        return axiosInstance.get('/Candidate/GetCandidateById')
+    static GetCandidateById(origem: number, idCandidate: number){
+        return axiosInstance.get(`/Candidate/GetCandidateById`, {
+            params: {
+                origem: origem
+            },
+            headers: {
+                externalId: idCandidate
+            }
+        });
     }
 }
 export class CandidatureService {
@@ -51,8 +49,16 @@ export class QuestionService {
     static GetAllQuestionsByOrigem(){
         return axiosInstance.post('/Questions/GetAllQuestionsByOrigem');
     }
-    static CreateQuestionsByIA(){
-        return axiosInstance.post('/Questions/CreateQuestionsByIA');
+    static CreateQuestionsByIA(VacancyId: number, CandidateId: number, origem: number){
+        return axiosInstance.post('/Questions/CreateQuestionsByIA', {
+            params:{
+                vacancyId: VacancyId
+            },
+            headers:{
+                candidateId: CandidateId,
+                origem: origem                
+            }
+        })
     }
     static CreateQuestion(){
         return axiosInstance.post('/Questions/CreateQuestion');
@@ -71,13 +77,15 @@ export class ResponseService {
 }
 export class VacancyService {
     static GetVacancyByExternalId(externalId: number, origem: number) {
-        return axiosInstance.get('/Vacancy/GetVacancyByExternalId', {
-            headers: {
-                externalId: externalId,
+        return axiosInstance.get(`/Vacancy/GetVacancyByExternalId`, {
+            params: {
                 origem: origem
+            },
+            headers: {
+                externalId: externalId.toString()
             }
         });
-    }
+    }    
 }
 export class RankingService {
     static GetAllRankings(){
@@ -116,12 +124,12 @@ export class NoteService {
         });
     }
 
-    static CreateNotes(noteData: {
-        idf_Vacancy: number;
-        idf_Candidate: number;
-        origemEnum: number;
-        note: string;
-    }) {
-        return axiosInstance.post('/Notes/CreateNotes', noteData);
-    }
+    static CreateNotes(Idf_Candidate: number, Idf_Vacancy: number, Note: string, OrigemEnum: number) {
+        return axiosInstance.post(`/Notes/CreateNotes`, {
+            idf_Candidate: Idf_Candidate,
+            idf_Vacancy: Idf_Vacancy,
+            note: Note,
+            origemEnum: OrigemEnum
+        });
+    } 
 }

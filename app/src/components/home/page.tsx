@@ -9,17 +9,6 @@ function Page() {
     const [isOpen, setIsOpen] = useState(false);
     const [ vagas, setVagas] = useState<Vacancy[]>([]);
 
-    useEffect(() => {
-        VacancyService.GetAllVacancies()
-            .then((response) => {
-                setVagas(response.data)
-                console.log(response.data)
-            })
-            .catch((error) => {
-                console.log('Erro ao tentar listar todas as vagas:', error)
-            })
-    }, []);
-
     const toggleCandidatos = (vaga: Vacancy) => {
         localStorage.setItem('idVaga', vaga.id.toString());
         router.push('/candidate')
