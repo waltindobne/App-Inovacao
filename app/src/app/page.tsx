@@ -8,7 +8,7 @@ import Vagas from "@/components/candidate/page";
 
 export default function Home(){
     return (
-        <main className="bg-gray-100">
+        <main>
             <Candidate/>
         </main>
     )

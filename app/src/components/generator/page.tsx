@@ -1,23 +1,29 @@
 "use client"
 import {useState, useEffect} from "react";
-import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft } from "lucide-react";
+import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft, Building, DatabaseZap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CandidateService, CandidatureService, NoteService, QuestionService, VacancyService } from "@/Services/WebApi";
 import { useData, Vacancy, Candidate} from "@/Context/AppContext";
+
+const Enum = [
+    "",
+    "BNE",
+    "TBR"
+]
 
 function Page(){
     const router = useRouter();
     const { data, setData } = useData();
     const [ note, setNote] = useState('');
-    const idCandidate = localStorage.getItem('idCandidate');
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [vacancy, setVacancy] = useState<Vacancy | null>(null);
 
-    const idVaga = localStorage.getItem('idVaga');
-    const origemEnum = localStorage.getItem('origem');
+    const idCandidate = Number(localStorage.getItem('idCandidate'));
+    const idVaga = Number(localStorage.getItem('idVaga'));
+    const origemEnum = Number(localStorage.getItem('origem'));
 
     useEffect(() => {
-        VacancyService.GetVacancyByExternalId(Number(idVaga), Number(origemEnum))
+        VacancyService.GetVacancyByExternalId(idVaga, origemEnum)
             .then((response) => {
                 console.log(response.data);
                 setVacancy(response.data);
@@ -25,7 +31,7 @@ function Page(){
             .catch((error) => {
                 console.log(error);
             })
-        CandidateService.GetCandidateById(Number(origemEnum), Number(idCandidate))
+        CandidateService.GetCandidateById(origemEnum, idCandidate)
             .then((response) => {
                 console.log(response.data);
                 setCandidate(response.data);
@@ -51,28 +57,32 @@ function Page(){
     }      
 
     return (
-        <div className="">
-            <div className="w-3xl my-10">
+        <div className="w-full">
+            <div className="w-3xl my-10 mx-auto">
                 <form onSubmit={handleEntrevista} className="w-full p-8 bg-white rounded-2xl text-slate-800 flex flex-col">
-                    <h1 className="text-2xl text-blue-900 mb-4">Entrevista</h1>
                     <div className="">
-                        <div className="mb-3">
-                            <label htmlFor="vaga" className="font-bold">Vaga:</label>
-                            <div>
-                                <p>{vacancy?.VacancyName}</p>
-                                <p>{vacancy?.VacancyCreator}</p>
-                                <p>{vacancy?.Description}</p>
+                        <div className="bg-sky-800 py-4 px-6 rounded-2xl">
+                            <div className="w-full flex justify-between">
+                                <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-200">{vacancy?.vacancyName}</p>
+                                <p className="w-64 flex justify-center items-center text-amber-100"><b className="mr-2">Empresa: </b> {vacancy?.vacancyCreator} <Building className="ml-2 text-blue-300"/></p>
+                                <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum]} <DatabaseZap className="ml-2 text-orange-300" /></p>
                             </div>
-                                
+                            <div className="my-3 flex text-slate-100 justify-between items-start">
+                                <div className="w-80">
+                                    <p><b>Id:</b> {candidate?.id}</p>
+                                    <p><b>Nome:</b> {candidate?.candidateName}</p>
+                                </div>
+                                <div className="w-full flex justify-start items-start">
+                                    <p className="font-bold">Curriculo:</p>
+                                    <p>{candidate?.candidate_CV}</p>
+                                </div>
+                                <div className="">
+                                    
+                                </div>
+                            </div>
                         </div>
-                        <div className="mb-3 flex flex-col">
-                            <label htmlFor="curriculo" className="font-bold">Candidato:</label>
-                            <p></p>
-                            <p></p>
-                            <p></p>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="anotacao" className="font-bold">Coloque suas Anotações aqui:</label>
+                        <div className="my-3">
+                            <label htmlFor="anotacao" className="font-bold mx-2">Coloque suas Anotações aqui:</label>
                             <textarea 
                                 name="anotacao" 
                                 id="" 

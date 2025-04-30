@@ -1,5 +1,5 @@
 "use client";
-import { SendHorizonal , ArrowBigLeft, FileUser } from "lucide-react";
+import { SendHorizonal , ArrowBigLeft, FileUser, Tags, DatabaseZap, UserCog, Medal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState , useEffect, Key} from "react";
 import { Candidate, useData, Vacancy } from "@/Context/AppContext";
@@ -15,7 +15,7 @@ const Enum = [
 
 function Page(){
     const router = useRouter();
-    const [isOpenEntrevista, setIsOpenEntrevista] = useState(true);
+    const [isOpenEntrevista, setIsOpenEntrevista] = useState(false);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
@@ -31,6 +31,8 @@ function Page(){
             console.log(origem)
             const responseVaga = await VacancyService.GetVacancyByExternalId(Number(externalId), origem);
             console.log('Vaga Encontrada:', responseVaga);
+            setSelectedVaga(responseVaga.data);
+
             const responseCandidates = await CandidateService.GetAllCandidates(responseVaga.data.id, origem);
             console.log(responseCandidates);
             setCandidates(responseCandidates.data);
@@ -45,9 +47,7 @@ function Page(){
     const toggleEntrevista = (candidate: Candidate) => {
         localStorage.setItem('idCandidate', String(candidate.id));
         setSelectedCandidate(candidate);
-        setTimeout(() => {
-            setModalClass("scale-100 opacity-100");
-        }, 10);
+        router.push('/generator');
     };
 
     const handleToRanking = () => {
@@ -90,93 +90,55 @@ function Page(){
                     </form>
                 </div>
                 ) : (
-                <div className="w-full bg-white shadow-lg shadow-slate-500 rounded-2xl">
-                    <div className="w-full flex justify-center items-center mb-10">
-                        <div className="w-full py-6 px-8 bg-sky-900 rounded-t-2xl ">
-                            <h1 className="text-2xl font-bold">Nome</h1>
-                            <p>Description</p>
-                            <div className="flex justify-around mt-4">
-                                <p>id</p>
-                                <p>Origem</p>
-                                <p>Creador</p>
-                                <p>Update</p>
+                <div className="w-full bg-white">
+                    <div className="w-full flex justify-center items-center">
+                        <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl ">
+                            <h1 className="text-2xl font-bold">{selectedVaga?.vacancyName}</h1>
+                            <p>{selectedVaga?.description}</p>
+                            <div className="flex justify-between items-center mt-4">
+                                <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>
+                                <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum]}</p>
+                                <p className="flex"><UserCog className="mr-2 text-green-400"/>Creador: {selectedVaga?.vacancyCreator}</p>
+                                <button className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
                             </div>
                         </div>
                     </div>
 
+                    <h1 className="w-full flex justify-center my-5 text-2xl text-blue-900">Candidatos - {candidates.length}</h1>
+
+                    <div className="w-full flex justify-center flex-wrap">
                     {candidates.map((candidato: Candidate, index: Key | null | undefined) => (
                     <button
                         key={index}
                         onClick={() => toggleEntrevista(candidato)}
-                        className="w-full p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 my-2 mx-8 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out"
+                        className="w-96 p-4 border-2 border-blue-900 rounded-2xl flex justify-center text-slate-800 m-1.5  hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out"
                     >
-                        <div className="">
-                            <div className="flex w-full justify-between items-center space-x-5">
-                                <h1 className=""><b className="mr-1">Id:</b> {candidato.id}</h1>
-                                <div className="flex justify-center">
-                                    <tr className="mr-2 font-bold">Nome:</tr>
-                                    <td>{candidato.candidateName}</td>
+                        <div className="flex flex-col w-full">
+                            <div className=" flex flex-col justify-start items-start space-x-5">
+                                <div className="w-full flex justify-between space-x-0">
+                                    <h1 className=""><b className="mr-1">Id:</b> {candidato.id}</h1>
+                                    <p onClick={(e) => OpenCV(e, candidato)} className="font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser /></p>
                                 </div>
-                                <div className="flex justify-center">
-                                    <tr className="mr-2 font-bold">Origem:</tr>
-                                    <td>{Enum[candidato.origemEnum]}</td>
+                                <div className="flex">
+                                    <p className="mr-2 font-bold">Nome:</p>
+                                    <p>{candidato.candidateName}</p>
                                 </div>
-                                <div className="flex justify-center">
-                                    <button onClick={(e) => OpenCV(e, candidato)} className="mr-2 font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser /></button>
+                                <div className="flex">
+                                    <p className="mr-2 font-bold">Origem:</p>
+                                    <p>{Enum[candidato.origemEnum]}</p>
                                 </div>
                             </div>
-                            <div className="mt-2">
-                                <tr>Curriculo:</tr>
-                                <td>{candidato.candidate_CV}</td>
+                            <div className="text-justify">
+                                <p className="font-bold">Curriculo:</p>
+                                <p>{candidato.candidate_CV}</p>
                             </div>
                         </div>
                     </button>
                     ))}
+                    </div>
                 </div>
                 )}
             </div>
-
-            <div className="fixed inset-0 flex justify-center items-center hidden">
-                <Entrevista/>
-            </div>
-
-            {selectedCandidate && selectedVaga && (
-            <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center text-slate-800" onClick={closeModal}>
-                <div className={`transform transition-all duration-200 ease-out ${modalClass} w-3xl max-h-full bg-white p-10 overflow-auto shadow-xl relative`} onClick={(e) => e.stopPropagation()}>
-                    <button className="absolute top-4 right-4 text-red-600 hover:text-red-500 cursor-pointer" onClick={closeModal}>X</button>
-                    <div className="flex items-start pb-4 border-b border-gray-400 mb-7">
-                        <div className="text-sm space-y-2">
-                            <div className="flex text-lg">
-                                <b className="mr-2">Nome:</b>
-                                <p>Dados candidato</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="space-y-4 text-md w-full">
-                        <div>
-                            Motivo da seleção
-                        </div>
-                    </div>
-                    <div className="mt-8 pt-8 border-t border-gray-200">
-                        <h1 className="full flex justify-center items-center mb-6 font-bold text-xl text-gray-700">Respostas do Candidato</h1>
-                    {perguntas.map((pergunta, index) => {
-                        const respostaCorrespondente = respostas[index] || "Nenhuma resposta fornecida";
-                        
-                        return (
-                            <div key={`pergunta-${index}`} className="question-item mb-4">
-                                <div className="question font-bold">
-                                    {pergunta}
-                                </div>
-                                <div className="text-sky-800 pb-1 px-3 mb-8 border-b border-gray-400">
-                                    {respostaCorrespondente}
-                                </div>
-                            </div>
-                        );
-                    })}
-                    </div>
-                </div>
-            </div>
-            )}
         </div>
     )
 }
