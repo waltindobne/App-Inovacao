@@ -71,8 +71,12 @@ export class ResponseService {
     static GetResponseByCandidatureId(){
         return axiosInstance.get('/Questions/GetResponseByCandidatureId');
     }
-    static CreateResponse(){
-        return axiosInstance.post('/Questions/CreateResponse');
+    static CreateResponse(idf_questions: number[], responses: string[], origemEnum: number){
+        return axiosInstance.post('/Questions/CreateResponse', {
+            idf_Questions: idf_questions,
+            responses: responses,
+            origemEnum: origemEnum
+        });
     }
 }
 export class VacancyService {
@@ -91,8 +95,12 @@ export class RankingService {
     static GetAllRankings(){
         return axiosInstance.get('/Vacancy/GetAllRankings');
     }
-    static GetAllRankingsByVacancyId(){
-        return axiosInstance.get('/Vacancy/GetAllRankingsByVacancyId');
+    static GetAllRankingsByVacancyId(vacancyId: number){
+        return axiosInstance.get('/Vacancy/GetAllRankingsByVacancyId',{
+            headers:{
+                vacancyId: vacancyId
+            }
+        });
     }
     static GetAllRankingsByOrigem(){
         return axiosInstance.get('/Vacancy/GetAllRankingsByOrigem');

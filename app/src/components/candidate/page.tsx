@@ -71,7 +71,7 @@ function Page(){
         <div className="w-4/5 mx-auto py-10">
             
             <div className="w-full flex flex-wrap justify-center items-center">
-            {candidates.length === 0 ? (
+            {candidates.length !== 0 ? (
                 <div className="w-full h-screen bg-[rgb(0,0,0,0.5)] fixed inset-0 flex justify-center items-center">
                         <form onSubmit={(e) => {
                             e.preventDefault();
@@ -97,7 +97,7 @@ function Page(){
                             <p>{selectedVaga?.description}</p>
                             <div className="flex justify-between items-center mt-4">
                                 <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>
-                                <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum]}</p>
+                                <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum ?? 0]}</p>
                                 <p className="flex"><UserCog className="mr-2 text-green-400"/>Creador: {selectedVaga?.vacancyCreator}</p>
                                 <button className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
                             </div>
@@ -125,7 +125,7 @@ function Page(){
                                 </div>
                                 <div className="flex">
                                     <p className="mr-2 font-bold">Origem:</p>
-                                    <p>{Enum[candidato.origemEnum]}</p>
+                                    <p>{Enum[candidato.origemEnum ?? 0]}</p>
                                 </div>
                             </div>
                             <div className="text-justify">

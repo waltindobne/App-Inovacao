@@ -41,20 +41,26 @@ function Page(){
             })
     }, []);
 
-    const handleEntrevista = async() => {
-        try{
+    const handleEntrevista = async () => {
+        try {
             if (!candidate || !vacancy) return;
-            const responseNote = NoteService.CreateNotes(candidate.id, vacancy.id, note, Number(origemEnum));
+    
+            const responseNote = await NoteService.CreateNotes(candidate.id, vacancy.id, note, Number(origemEnum));
             console.log(responseNote);
-
+    
             if (!responseNote) return;
-            const responseQuestions = QuestionService.CreateQuestionsByIA(vacancy.id, candidate.id, Number(origemEnum));
+    
+            const responseQuestions = await QuestionService.CreateQuestionsByIA(vacancy.id, candidate.id, Number(origemEnum));
             console.log(responseQuestions);
+    
+            setData(prev => ({
+                ...prev,
+                questions: responseQuestions.data
+            }));
+        } catch (error) {
+            console.log('Erro ao finalizar entrevista:', error);
         }
-        catch(error){
-            console.log('Erro ao finalizar entrevista:', error)
-        }
-    }      
+    };
 
     return (
         <div className="w-full">
@@ -65,7 +71,7 @@ function Page(){
                             <div className="w-full flex justify-between">
                                 <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-200">{vacancy?.vacancyName}</p>
                                 <p className="w-64 flex justify-center items-center text-amber-100"><b className="mr-2">Empresa: </b> {vacancy?.vacancyCreator} <Building className="ml-2 text-blue-300"/></p>
-                                <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum]} <DatabaseZap className="ml-2 text-orange-300" /></p>
+                                <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum ?? 0]} <DatabaseZap className="ml-2 text-orange-300" /></p>
                             </div>
                             <div className="my-3 flex text-slate-100 justify-between items-start">
                                 <div className="w-80">
