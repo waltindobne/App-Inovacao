@@ -25,16 +25,16 @@ function Page() {
                     <div className="w-full flex justify-around items-center">
                         <div className="flex space-x-1">
                             <b>id:</b>
-                            <p>{vaga.VacancyName}</p>
+                            <p>{vaga.vacancyName}</p>
                         </div>
                         <div className="flex space-x-1">
                             <b>Empresa:</b>
-                            <p>{vaga.VacancyCreator}</p>
+                            <p>{vaga.vacancyCreator}</p>
                         </div>
                     </div>
                     <div className="flex flex-col justify-center items-start mt-4">
                         <b>Descrição:</b>
-                        <p className="text-justify mx-3">{vaga.Description}</p>
+                        <p className="text-justify mx-3">{vaga.description}</p>
                     </div>
                 </button>
                 ))}
