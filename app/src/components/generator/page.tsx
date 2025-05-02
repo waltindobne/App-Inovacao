@@ -1,142 +1,101 @@
 "use client"
 import {useState, useEffect} from "react";
-import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft } from "lucide-react";
+import { SendHorizonal, UploadIcon, Paperclip, ArrowBigLeft, Building, DatabaseZap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { InovaService } from "@/Services/WebApi";
-import { useData } from "@/Context/AppContext";
+import { CandidateService, CandidatureService, NoteService, QuestionService, VacancyService } from "@/Services/WebApi";
+import { useData, Vacancy, Candidate} from "@/Context/AppContext";
 
-interface DataQuest{
-    perguntas: string[],
-    respostas: string,
-    vaga: string,
-    curriculo: string,
-    anotacoes: string,
-    transcricao: string,
-    relatorios: string
-}
+const Enum = [
+    "",
+    "BNE",
+    "TBR"
+]
 
 function Page(){
     const router = useRouter();
     const { data, setData } = useData();
-    const [ numQuest, setNumQuest] = useState(1);
-    const [ vaga, setVaga] = useState('')
-    const [ anotacoes, setAnotacoes] = useState('')
-    const [ transcricao, setTranscricao] = useState('')
-    const [ curriculo, setCurriculo] = useState('')
-    const [perguntas, setPerguntas] = useState<string[]>([]);
-    const [formValues, setFormValues] = useState({
-        vaga: "",
-        curriculo: "",
-        anotacoes: "",
-        transcricao: "",
-        relatorios: "",
-        perguntas: "",
-        respostas: ""
-    });
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormValues({ ...formValues, [name]: value });
-    };
-    /*
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const [ note, setNote] = useState('');
+    const [candidate, setCandidate] = useState<Candidate | null>(null);
+    const [vacancy, setVacancy] = useState<Vacancy | null>(null);
 
-        // Atualizando o contexto com os novos dados
-        setData({
-            ...data,
-            vaga: formValues.vaga,
-            curriculo: formValues.curriculo,
-            anotacoes: formValues.anotacoes,
-            transcricao: formValues.transcricao,
-            relatorios: formValues.relatorios,
-            perguntas: formValues.perguntas ? [formValues.perguntas] : [],
-            respostas: formValues.respostas
-        });
+    const idCandidate = Number(localStorage.getItem('idCandidate'));
+    const idVaga = Number(localStorage.getItem('idVaga'));
+    const origemEnum = Number(localStorage.getItem('origem'));
 
-        console.log("Dados atualizados no contexto!");
-        router.push("/questions")
-    };*/
-    
-    const handleChangeSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    useEffect(() => {
+        VacancyService.GetVacancyByExternalId(idVaga, origemEnum)
+            .then((response) => {
+                console.log(response.data);
+                setVacancy(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        CandidateService.GetCandidateById(origemEnum, idCandidate)
+            .then((response) => {
+                console.log(response.data);
+                setCandidate(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }, []);
+
+    const handleEntrevista = async () => {
         try {
-            let novasPerguntas = [...perguntas];
-            while (novasPerguntas.length < 3) {
-                novasPerguntas.push(`${novasPerguntas.length + 1} - Lorem ipsum dolor sit amet...`);
-            }
+            if (!candidate || !vacancy) return;
     
-            setData({
-                ...data,
-                vaga,
-                curriculo,
-                anotacoes,
-                transcricao,
-                relatorios: formValues.relatorios,
-                perguntas: novasPerguntas,
-                respostas: formValues.respostas
-            });
+            const responseNote = await NoteService.CreateNotes(candidate.id, vacancy.id, note, Number(origemEnum));
+            console.log(responseNote);
     
-            setPerguntas(novasPerguntas);
+            if (!responseNote) return;
     
-            console.log("Dados atualizados no contexto!", {
-                ...data,
-                perguntas: novasPerguntas
-            });
+            const responseQuestions = await QuestionService.CreateQuestionsByIA(vacancy.id, candidate.id, Number(origemEnum));
+            console.log(responseQuestions);
     
-            router.push('/questions');
+            setData(prev => ({
+                ...prev,
+                questions: responseQuestions.data
+            }));
         } catch (error) {
-            console.error('Erro ao gerar perguntas:', error);
+            console.log('Erro ao finalizar entrevista:', error);
         }
     };
-    
-
 
     return (
-        <div className="w-full flex justify-center">
-            <div className="w-3/5 my-10">
-                <form method="post" onSubmit={handleChangeSubmit} className="w-full p-8 bg-gray-100 rounded-2xl border-2 border-blue-900 text-slate-800 flex flex-col">
-                    <h1 className="text-2xl text-blue-900 mb-4">Dados do Candidato</h1>
+        <div className="w-full">
+            <div className="w-3xl my-10 mx-auto">
+                <form onSubmit={handleEntrevista} className="w-full p-8 bg-white rounded-2xl text-slate-800 flex flex-col">
                     <div className="">
-                        <div className="mb-3">
-                            <label htmlFor="vaga" className="font-bold">Vaga:</label>
-                            <select name="" id="" className="w-full p-2 bg-white border border-slate-400 rounded-lg outline-0">
-                                <option value="">vaga1</option>
-                                <option value="">vaga2</option>
-                                <option value="">vaga3</option>
-                                <option value="">vaga4</option>
-                            </select>
+                        <div className="bg-sky-800 py-4 px-6 rounded-2xl">
+                            <div className="w-full flex justify-between">
+                                <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-200">{vacancy?.vacancyName}</p>
+                                <p className="w-64 flex justify-center items-center text-amber-100"><b className="mr-2">Empresa: </b> {vacancy?.vacancyCreator} <Building className="ml-2 text-blue-300"/></p>
+                                <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum ?? 0]} <DatabaseZap className="ml-2 text-orange-300" /></p>
+                            </div>
+                            <div className="my-3 flex text-slate-100 justify-between items-start">
+                                <div className="w-80">
+                                    <p><b>Id:</b> {candidate?.id}</p>
+                                    <p><b>Nome:</b> {candidate?.candidateName}</p>
+                                </div>
+                                <div className="w-full flex justify-start items-start">
+                                    <p className="font-bold">Curriculo:</p>
+                                    <p>{candidate?.candidate_CV}</p>
+                                </div>
+                                <div className="">
+                                    
+                                </div>
+                            </div>
                         </div>
-                        <div className="mb-3">
-                            <label htmlFor="curriculo" className="font-bold">Descreva o curriculo aqui:</label>
-                            <textarea 
-                                name="curriculo" 
-                                id="" 
-                                placeholder="Digite aqui" 
-                                value={curriculo} 
-                                onChange={(e) => setCurriculo(e.target.value)}
-                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg outline-0"
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="anotacao" className="font-bold">Coloque suas Anotações aqui:</label>
+                        <div className="my-3">
+                            <label htmlFor="anotacao" className="font-bold mx-2">Coloque suas Anotações aqui:</label>
                             <textarea 
                                 name="anotacao" 
                                 id="" 
                                 placeholder="Digite aqui" 
-                                value={anotacoes} 
-                                onChange={(e) => setAnotacoes(e.target.value)}
+                                value={note} 
+                                onChange={(e) => setNote(e.target.value)}
                                 className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg outline-0"
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="transcricao" className="font-bold">Coloque suas Transcrições aqui:</label>
-                            <textarea 
-                                name="trascricao" 
-                                id="" 
-                                placeholder="Digite aqui" 
-                                value={transcricao} 
-                                onChange={(e) => setTranscricao(e.target.value)}
-                                className="w-full p-2 min-h-24 max-h-24 bg-white border border-slate-400 rounded-lg outline-0"
                             />
                         </div>
                         <div className="w-full">
@@ -144,29 +103,7 @@ function Page(){
                         </div>
                     </div>
                 </form>
-            </div>{/*}
-            <div className={styles.Result}>
-                <div className={styles.pergunta}>
-                    <h1>1 -</h1>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae, ad corporis pariatur error expedita dolores voluptatem ut tempora, autem consequatur nesciunt beatae. Porro animi laborum qui repellendus?</p>
-                </div>
-                <div className={styles.pergunta}>
-                    <h1>2 -</h1>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae, ad corporis pariatur error expedita dolores voluptatem ut tempora, autem consequatur nesciunt beatae. Porro animi laborum qui repellendus?</p>
-                </div>
-                <div className={styles.pergunta}>
-                    <h1>3 -</h1>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae, ad corporis pariatur error expedita dolores voluptatem ut tempora, autem consequatur nesciunt beatae. Porro animi laborum qui repellendus?</p>
-                </div>
-                <div className={styles.pergunta}>
-                    <h1>4 -</h1>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae, ad corporis pariatur error expedita dolores voluptatem ut tempora, autem consequatur nesciunt beatae. Porro animi laborum qui repellendus?</p>
-                </div>
-                <div className={styles.pergunta}>
-                    <h1>5 -</h1>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minima aliquam ipsam vitae, ad corporis pariatur error expedita dolores voluptatem ut tempora, autem consequatur nesciunt beatae. Porro animi laborum qui repellendus?</p>
-                </div>
-            </div>*/}
+            </div>
         </div>
     )
 }

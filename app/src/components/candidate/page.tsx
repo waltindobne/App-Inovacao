@@ -1,134 +1,61 @@
 "use client";
-import { SendHorizonal , ArrowBigLeft } from "lucide-react";
+import { SendHorizonal , ArrowBigLeft, FileUser, Tags, DatabaseZap, UserCog, Medal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState , useEffect} from "react";
-import { useData } from "@/Context/AppContext";
+import { useState , useEffect, Key} from "react";
+import { Candidate, useData, Vacancy } from "@/Context/AppContext";
+import { CandidateService, VacancyService } from "@/Services/WebApi";
+import Entrevista from "@/components/generator/page";
+import axios from "axios";
 
-interface Candidato {
-    nome: string;
-    email: string;
-    telefone: string;
-    idade: number;
-    aptidao: number;
-    motivo: string;
-    vaga: number;
-    foto: string;
-}
-
-const Candidatos = [
-    {
-        "nome": "João",
-        "email": "joao@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 20,
-        "aptidao": 90,
-        "motivo": "João demonstrou excelente domínio técnico, destacando-se na resolução de problemas e na habilidade de aprender novas tecnologias rapidamente. Seu envolvimento ativo em projetos acadêmicos e pessoais evidencia sua iniciativa e potencial de crescimento.",
-        "vaga": 1,
-        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs6NOtbwDZZAe8GpwIjUTq2WYn_ExYBshhhQ&s"
-    },
-    {
-        "nome": "Maria",
-        "email": "maria@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 25,
-        "aptidao": 74,
-        "motivo": "Maria se destacou pela sua comunicação clara e objetiva, sendo uma peça-chave em atividades colaborativas. Seu histórico profissional demonstra grande habilidade em liderar equipes e propor soluções inovadoras.",
-        "vaga": 2,
-        "foto": "https://i0.wp.com/blog.infojobs.com.br/wp-content/uploads/2023/08/aproximacao-de-uma-jovem-profissional-feminina-fazendo-contato-visual-contra-o-fundo-colorido.jpg?resize=604%2C403&ssl=1"
-    },
-    {
-        "nome": "Carlos",
-        "email": "carlos@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 30,
-        "aptidao": 30,
-        "motivo": "Carlos demonstrou forte comprometimento e dedicação. Embora tenha apresentado dificuldades técnicas, seu empenho em buscar melhorias contínuas e sua experiência prévia em ambientes corporativos agregam valor ao time.",
-        "vaga": 3,
-        "foto": "https://f.i.uol.com.br/fotografia/2025/01/28/17380813716799045bb0ffb_1738081371_3x2_md.jpg"
-    },
-    {
-        "nome": "Ana",
-        "email": "ana@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 22,
-        "aptidao": 85,
-        "motivo": "Ana apresentou excelente capacidade analítica e espírito crítico, sendo muito elogiada pelo seu raciocínio lógico durante as entrevistas técnicas. Sua postura profissional e segurança nas respostas mostram preparo e experiência.",
-        "vaga": 4,
-        "foto": "https://randomuser.me/api/portraits/women/44.jpg"
-    },
-    {
-        "nome": "Felipe",
-        "email": "felipe@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 27,
-        "aptidao": 78,
-        "motivo": "Felipe possui forte habilidade em gestão de tempo e organização, destacando-se por sua abordagem prática e soluções criativas durante os testes. Sua experiência anterior fortalece suas competências na área administrativa.",
-        "vaga": 5,
-        "foto": "https://randomuser.me/api/portraits/men/44.jpg"
-    },
-    {
-        "nome": "Juliana",
-        "email": "juliana@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 24,
-        "aptidao": 95,
-        "motivo": "Juliana se destacou pela sua facilidade em lidar com pessoas e sua capacidade de criar conexões rapidamente. Sua empatia e habilidades interpessoais são grandes diferenciais para cargos que exigem interação constante com clientes.",
-        "vaga": 6,
-        "foto": "https://randomuser.me/api/portraits/women/45.jpg"
-    },
-    {
-        "nome": "Ricardo",
-        "email": "ricardo@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 35,
-        "aptidao": 60,
-        "motivo": "Ricardo demonstrou habilidades sólidas em gestão de conflitos e negociação. Sua experiência anterior em liderança de equipes foi crucial para a resolução eficiente de problemas durante as dinâmicas de grupo.",
-        "vaga": 7,
-        "foto": "https://randomuser.me/api/portraits/men/45.jpg"
-    },
-    {
-        "nome": "Carolina",
-        "email": "carolina@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 28,
-        "aptidao": 88,
-        "motivo": "Carolina possui grande habilidade analítica e lógica. Sua experiência anterior em áreas de tecnologia e sua capacidade de adaptação às mudanças foram pontos fortes destacados durante o processo seletivo.",
-        "vaga": 8,
-        "foto": "https://randomuser.me/api/portraits/women/46.jpg"
-    },
-    {
-        "nome": "Marcos",
-        "email": "marcos@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 32,
-        "aptidao": 40,
-        "motivo": "Marcos demonstrou ser uma pessoa extremamente dedicada e esforçada. Embora tenha apresentado algumas dificuldades técnicas, seu interesse em aprender e evoluir ficou evidente durante o processo seletivo.",
-        "vaga": 9,
-        "foto": "https://randomuser.me/api/portraits/men/46.jpg"
-    },
-    {
-        "nome": "Beatriz",
-        "email": "beatriz@gmail.com",
-        "telefone": "(41) 9 8765 4321",
-        "idade": 29,
-        "aptidao": 92,
-        "motivo": "Beatriz demonstrou habilidades excepcionais em comunicação e persuasão. Sua experiência na área comercial e sua postura profissional garantiram um desempenho acima da média durante todas as etapas do processo seletivo.",
-        "vaga": 10,
-        "foto": "https://randomuser.me/api/portraits/women/47.jpg"
-    }
-];
-
-
+const Enum = [
+    "",
+    "BNE",
+    "TBR"
+]
 
 function Page(){
     const router = useRouter();
-    const [isOpen, setIsOpen] = useState(true);
-    const { data } = useData();
-    const [ Result, setResult ] = useState(data || []);
+    const [isOpenEntrevista, setIsOpenEntrevista] = useState(false);
     const [modalClass, setModalClass] = useState("scale-0 opacity-0");
-    const [selectedCandidate, setSelectedCandidate] = useState<Candidato | null>(null);
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+    const [selectedVaga, setSelectedVaga] = useState<Vacancy | null>(null);
 
-    const toggleCurriculo = (candidato:Candidato) => {
+    const [externalId, setExternalId] = useState('');
+    const [origem, setOrigem] = useState(1);
+
+    const handleCandidatosVaga = async() => {
+        try{
+            localStorage.setItem('idVaga', String(externalId));
+            localStorage.setItem('origem', String(origem));
+            console.log(origem)
+            const responseVaga = await VacancyService.GetVacancyByExternalId(Number(externalId), origem);
+            console.log('Vaga Encontrada:', responseVaga);
+            setSelectedVaga(responseVaga.data);
+
+            const responseCandidates = await CandidateService.GetAllCandidates(responseVaga.data.id, origem);
+            console.log(responseCandidates);
+            setCandidates(responseCandidates.data);
+        }
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+            console.error('Detalhes do erro:', error.response?.data);
+            }
+        }
+    }
+
+    const toggleEntrevista = (candidate: Candidate) => {
+        localStorage.setItem('idCandidate', String(candidate.id));
+        setSelectedCandidate(candidate);
+        router.push('/generator');
+    };
+
+    const handleToRanking = () => {
+        router.push('/Ranking')
+    }
+
+    const OpenCV = (e: React.MouseEvent, candidato: Candidate) => {
+        e.stopPropagation();
         setSelectedCandidate(candidato);
         setTimeout(() => {
             setModalClass("scale-100 opacity-100");
@@ -140,81 +67,78 @@ function Page(){
             setSelectedCandidate(null);
         }, 200);
     };
-    
-    
-
-    const returnHome = () => {
-        router.push('/')
-    }
-    const handleToRanking = () => {
-        router.push('/Ranking')
-    }
-
-    const ordenarPorAptidao = (lista: Candidato[]) => {
-        return [...lista].sort((a, b) => b.aptidao - a.aptidao);
-    };
     return(
-        <div className="w-4/5 mx-auto my-10">
-            <div className=" w-full flex justify-center items-center mb-10">
-                <h1 className="text-blue-900 text-2xl mr-4">Lista de Candidatos - {Candidatos.length}</h1>
-                <button className="px-4 py-2 bg-gray-200 border-2 border-blue-900 rounded-lg text-blue-900 font-bold hover:bg-blue-900 hover:text-white cursor-pointer" onClick={handleToRanking}>Gerar Ranking</button>
-            </div>
-            <div className="w-full mt-4 flex flex-wrap justify-center items-center">
-                {Candidatos.map((candidato, index) => (
-                <button onClick={() => toggleCurriculo(candidato)} className="w-lg p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 min-h-50 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer  transition duration-200 ease-in-out" key={index}>
-                    {/*<img src={candidato.foto} alt="" className="w-30 h-30 rounded-sm"/>*/}
-                    <div className="">
-                        <div className="flex w-full justify-between">
-                            <h1><b className="mr-1">N° Candidato:</b> {index + 1}</h1>
-                            <div className="flex">
-                                <tr className="mr-2 font-bold">nome:</tr>
-                                <td>{candidato.nome}</td>
-                            </div>
-                            {/*<div className={styles.linha}>
-                                <tr>Email:</tr>
-                                <td>{candidato.email}</td>
-                            </div>
-                            <div className={styles.linha}>
-                                <tr>Telefone:</tr>
-                                <td>{candidato.telefone}</td>
-                            </div>*/}
-                            <div className="flex">
-                                <tr className="mr-2 font-bold">Aptidão:</tr>
-                                <td>{candidato.aptidao}%</td>
-                            </div>
-                        </div>
-                        <div className=" mt-2">
-                            <td>{candidato.motivo}</td>
-                        </div>
-                    </div>
-                </button>
-                ))}
-            </div>
+        <div className="w-4/5 mx-auto py-10">
+            
+            <div className="w-full flex flex-wrap justify-center items-center">
+            {candidates.length !== 0 ? (
+                <div className="w-full h-screen bg-[rgb(0,0,0,0.5)] fixed inset-0 flex justify-center items-center">
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            handleCandidatosVaga();
+                        }} className="w-xl p-6 bg-white rounded-xl">
 
-            {selectedCandidate && (
-            <div className="fixed inset-0 bg-[rgb(0,0,0,0.5)] flex justify-center items-center text-slate-800" onClick={closeModal}>
-                <div className={`transform transition-all duration-200 ease-out ${modalClass} w-3xl max-h-9/12 bg-white p-10 overflow-auto rounded-xl shadow-xl relative`} onClick={(e) => e.stopPropagation()}>
-                    <button className="absolute top-4 right-4 text-red-600 hover:text-red-500 cursor-pointer" onClick={closeModal}>X</button>
-                    <div className="flex items-start pb-4 border-b border-gray-400 mb-7">
-                        <img
-                            src=""
-                            alt=""
-                            className="w-24 h-24 rounded-full mr-10"
-                        />
-                        <div className="text-sm space-y-2">
-                            <div><b>Nome:</b></div>
-                            <div><b>Email:</b> </div>
-                            <div><b>Telefone:</b></div>
+                        <h1 className="
+                        text-red-900 w-full bg-red-300 flex justify-center p-4 border border-red-700 rounded-2xl">!! Nenhuma Vaga foi selecionada passe a Origem e o Idf da Vaga !!</h1>
+                        <select name="OrigemEnum" className="w-full p-3 mt-6 bg-gray-300 rounded-lg text-slate-800 outline-0 cursor-pointer"
+                        value={origem} onChange={(e) => setOrigem(Number(e.target.value))}>
+                            <option value="1" className="">BNE</option>
+                            <option value="2" className="">TBR</option>
+                        </select>
+                        <input type="number" placeholder="Idf da Vaga" className="w-full px-3 py-2 mt-3 rounded-lg bg-gray-300 text-slate-800 outline-0" value={externalId} onChange={(e) => setExternalId(e.target.value)}/>
+                        <button className="w-full p-2 mt-6 bg-gray-100 border-2 border-green-500 rounded-lg text-slate-800 font-bold hover:bg-green-500 hover:text-white transition duration-200 cursor-pointer">Confirmar</button>
+                    </form>
+                </div>
+                ) : (
+                <div className="w-full bg-white">
+                    <div className="w-full flex justify-center items-center">
+                        <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl ">
+                            <h1 className="text-2xl font-bold">{selectedVaga?.vacancyName}</h1>
+                            <p>{selectedVaga?.description}</p>
+                            <div className="flex justify-between items-center mt-4">
+                                <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>
+                                <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum ?? 0]}</p>
+                                <p className="flex"><UserCog className="mr-2 text-green-400"/>Creador: {selectedVaga?.vacancyCreator}</p>
+                                <button className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
+                            </div>
                         </div>
                     </div>
-                    <div className="space-y-4 text-md w-full">
-                        <div>
-                            {selectedCandidate.motivo}
+
+                    <h1 className="w-full flex justify-center my-5 text-2xl text-blue-900">Candidatos - {candidates.length}</h1>
+
+                    <div className="w-full flex justify-center flex-wrap">
+                    {candidates.map((candidato: Candidate, index: Key | null | undefined) => (
+                    <button
+                        key={index}
+                        onClick={() => toggleEntrevista(candidato)}
+                        className="w-96 p-4 border-2 border-blue-900 rounded-2xl flex justify-center text-slate-800 m-1.5  hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out"
+                    >
+                        <div className="flex flex-col w-full">
+                            <div className=" flex flex-col justify-start items-start space-x-5">
+                                <div className="w-full flex justify-between space-x-0">
+                                    <h1 className=""><b className="mr-1">Id:</b> {candidato.id}</h1>
+                                    <p onClick={(e) => OpenCV(e, candidato)} className="font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser /></p>
+                                </div>
+                                <div className="flex">
+                                    <p className="mr-2 font-bold">Nome:</p>
+                                    <p>{candidato.candidateName}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="mr-2 font-bold">Origem:</p>
+                                    <p>{Enum[candidato.origemEnum ?? 0]}</p>
+                                </div>
+                            </div>
+                            <div className="text-justify">
+                                <p className="font-bold">Curriculo:</p>
+                                <p>{candidato.candidate_CV}</p>
+                            </div>
                         </div>
+                    </button>
+                    ))}
                     </div>
                 </div>
+                )}
             </div>
-            )}
         </div>
     )
 }

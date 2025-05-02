@@ -1,62 +1,46 @@
 "use client";
-import { SendHorizonal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState , useEffect} from "react";
+import { useEffect, useState } from "react";
+import { Vacancy } from "@/Context/AppContext";
+import { VacancyService } from "@/Services/WebApi";
 
-const Vagas = [
-    {
-        "foto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH-Xu2k0C4wdc35bq-r9uI1813kclztywZhw&s",
-        "vaga": "Desenvolvedor Frontend",
-        "quantidade": 2,
-        "salario": 4000,
-        "requisitos": "html, css, javascript, react, tailwind"
-    },
-    {
-        "foto": "https://i.pinimg.com/564x/b4/00/bb/b400bba24a3ac713c5611facf4376d7e.jpg",
-        "vaga": "Desenvolvedor Backend",
-        "quantidade": 3,
-        "salario": 4500,
-        "requisitos": "c#, sql, github, azure"
-    }
-];
-
-function Page(){
+function Page() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+    const [ vagas, setVagas] = useState<Vacancy[]>([]);
 
-    const toggleCandidatos = () => {
+    const toggleCandidatos = (vaga: Vacancy) => {
+        localStorage.setItem('idVaga', vaga.id.toString());
         router.push('/candidate')
     }
-
-    return(
+    
+    return (
         <div className="w-4/5 mx-auto my-10">
-            <h1 className="w-full flex justify-center text-sky-900 text-2xl py-3">Vagas Disponiveis - {Vagas.length}</h1>
+            <h1 className="w-full flex justify-center text-sky-900 text-2xl py-3">
+                Vagas Disponíveis - {vagas.length}
+            </h1>
             <div className="w-full flex flex-wrap justify-center">
-                {Vagas.map((vaga, index) => (
-                <button onClick={toggleCandidatos} className="w- m-2 p-4 flex text-slate-900 bg-white border-2 border-blue-900 rounded-2xl hover:bg-slate-200 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index}>
-                    <img src={vaga.foto} alt="" className="w-60 rounded-md"/>
-                    <div className="w-60 mx-4 flex flex-col items-start">
-                        <div className="w-full flex border-b border-gray-400">
-                            <tr className="font-bold mr-2">Vaga:</tr>
-                            <td>{vaga.vaga}</td>
+                {vagas.map((vaga:Vacancy) => (
+                    <button onClick={() => toggleCandidatos(vaga)} className="w-xl h-70 p-4 border-2 border-blue-900 rounded-2xl text-slate-800 flex flex-col">
+                    <div className="w-full flex justify-around items-center">
+                        <div className="flex space-x-1">
+                            <b>id:</b>
+                            <p>{vaga.VacancyName}</p>
                         </div>
-                        <div className="w-full flex border-b border-gray-400">
-                            <tr className="font-bold mr-2">Disponiveis:</tr>
-                            <td>{vaga.quantidade}</td>
+                        <div className="flex space-x-1">
+                            <b>Empresa:</b>
+                            <p>{vaga.VacancyCreator}</p>
                         </div>
-                        <div className="w-full flex border-b border-gray-400">
-                            <tr className="font-bold mr-2">Salario:</tr>
-                            <td>{vaga.salario}</td>
-                        </div>
-                        <div className="w-full flex">
-                            <tr className="font-bold mr-2">Requisitos:</tr>
-                            <td>{vaga.requisitos}</td>
-                        </div>
+                    </div>
+                    <div className="flex flex-col justify-center items-start mt-4">
+                        <b>Descrição:</b>
+                        <p className="text-justify mx-3">{vaga.Description}</p>
                     </div>
                 </button>
                 ))}
             </div>
         </div>
-    )
+    );
 }
+
 export default Page;

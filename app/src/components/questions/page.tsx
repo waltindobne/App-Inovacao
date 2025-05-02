@@ -1,81 +1,104 @@
 "use client"
-import { Paperclip, Check, ArrowBigLeft } from "lucide-react";
+import { Paperclip, Check, ArrowBigLeft, DatabaseZap, Building } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useData } from "@/Context/AppContext";
+import { Vacancy, Candidate, Questions, Responses } from "@/Context/AppContext";
+import { CandidateService, CandidatureService, QuestionService, ResponseService, VacancyService } from "@/Services/WebApi";
 
-const Candidato = {
-    foto: "https://i.pinimg.com/564x/b4/00/bb/b400bba24a3ac713c5611facf4376d7e.jpg",
-    nome: "João Teste",
-    email: "joao@gmail.com",
-    idade: 3,
-}
+const Enum = [
+    "",
+    "BNE",
+    "TBR"
+]
 
 function Page() {
-    const [indiceAtual, setIndiceAtual] = useState(0);
-    const [nomeArquivo, setNomeArquivo] = useState("");
     const router = useRouter();
-    const { data } = useData();
-    const [perguntas, setPerguntas] = useState(data.perguntas || []);
-    const [respostas, setRespostas] = useState(Array((data.perguntas || []).length).fill(""));
+    const [indiceAtual, setIndiceAtual] = useState(0);
     
-    const returnHome = () => {
-        router.push('/')
-    }
-    console.log(data)
+    const [candidate, setCandidate] = useState<Candidate | null>(null);
+    const [vacancy, setVacancy] = useState<Vacancy | null>(null);
+    const [questions, setQuestions] = useState<Questions[]>([]);
+    const [responses, setResponses] = useState<string[]>([]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const novasRespostas = [...respostas];
-        novasRespostas[index] = e.target.value;
-        setRespostas(novasRespostas);
-    };
+    const idCandidate = Number(localStorage.getItem('idCandidate'));
+    const idVaga = Number(localStorage.getItem('idVaga'));
+    const origemEnum = Number(localStorage.getItem('origem'));
 
     useEffect(() => {
-        if (respostas[indiceAtual]?.trim() !== "" && indiceAtual < perguntas.length - 1) {
-            setTimeout(() => setIndiceAtual(indiceAtual + 1), 1200);
+        VacancyService.GetVacancyByExternalId(idVaga, origemEnum)
+            .then((response) => {
+                console.log(response.data);
+                setVacancy(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        CandidateService.GetCandidateById(origemEnum, idCandidate)
+            .then((response) => {
+                console.log(response.data);
+                setCandidate(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }, []);
+
+
+    const handleEntrevista = async() => {
+        try{
+            if (!candidate || !vacancy || !questions || !responses) return;
+            const questionsIds = questions.map(i => i.id);
+            const response = ResponseService.CreateResponse(questionsIds, responses,origemEnum);
+            console.log(response);
         }
-    }, [respostas, indiceAtual, perguntas]);
+        catch(error){
+            console.log('Erro ao finalizar entrevista:', error)
+        }
+    }
+    const handleChangeResponse = (index: number, value: string) => {
+        const newResponses = [...responses];
+        newResponses[index] = value;
+        setResponses(newResponses);
+      };
 
     return (
-        <div className="w-3/5 p-8 mx-auto my-10 border-2 border-blue-900 rounded-2xl">
+        <div className="w-3/5 p-8 mx-auto my-10">
             {/*<h1 className="text-blue-900 text-2xl">Perguntas e Respostas</h1>*/}
             <div className="w-full text-slate-800">
                 <div className="w-full flex mb-6 pb-4 border-b border-slate-200">
-                    <img src={Candidato.foto} alt="" className="w-50 rounded-md"/>
-                    <div className="w-full mx-4 flex flex-col items-start">
-                        <div className="w-full flex border-b border-gray-200">
-                            <tr className="font-bold mr-2">Nome:</tr>
-                            <td>{Candidato.nome}</td>
+                <div className="w-full bg-sky-800 py-4 px-6 rounded-2xl">
+                    <div className="w-full flex justify-between">
+                        <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-200">{vacancy?.vacancyName}</p>
+                        <p className="w-64 flex justify-center items-center text-amber-100"><b className="mr-2">Empresa: </b> {vacancy?.vacancyCreator} <Building className="ml-2 text-blue-300"/></p>
+                        <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum ?? 0]} <DatabaseZap className="ml-2 text-orange-300" /></p>
+                    </div>
+                    <div className="my-3 flex text-slate-100 justify-between items-start">
+                        <div className="w-80">
+                            <p><b>Id:</b> {candidate?.id}</p>
+                            <p><b>Nome:</b> {candidate?.candidateName}</p>
                         </div>
-                        <div className="w-full flex border-b border-gray-200">
-                            <tr className="font-bold mr-2">Email:</tr>
-                            <td>{Candidato.email}</td>
-                        </div>
-                        <div className="w-full flex">
-                            <tr className="font-bold mr-2">Idade:</tr>
-                            <td>{Candidato.idade}</td>
+                        <div className="w-full flex justify-start items-start">
+                            <p className="font-bold">Curriculo:</p>
+                            <p>{candidate?.candidate_CV?.substring(0,100)}...</p>
                         </div>
                     </div>
                 </div>
-                <form action="">
-                    {perguntas.slice(0, indiceAtual + 1).map((pergunta, index) => (
+                </div>
+                <form onSubmit={handleEntrevista}>
+                    {questions?.map((pergunta, index) => (
                         <div key={index} className="mt-4 flex flex-col w-full">
-                            <label htmlFor="respostas"><b>{pergunta}</b></label>
+                            <label><b>{pergunta.question}</b></label>
                             <input
-                                type="text"
-                                name="respostas"
-                                placeholder="Digite aqui a resposta"
-                                value={respostas[index]} 
-                                onChange={(e) => handleChange(e, index)}
-                                required
-                                className="w-full p-2 bg-slate-50 border-b border-slate-400 outline-0"
+                            type="text"
+                            value={responses[index] || ''}
+                            onChange={(e) => handleChangeResponse(index, e.target.value)}
+                            className="w-full p-2 bg-slate-50 border-b border-slate-400 outline-0"
                             />
                         </div>
                     ))}
-
-                    {indiceAtual === perguntas.length - 1 && respostas[indiceAtual].trim() !== "" && (
+                    {responses.length === questions.length && responses.every(resposta => resposta?.trim() !== "") && (
                         <div>
-                            <button className="w-full flex justify-center items-center mt-4 p-2 border-2 border-green-500 rounded-lg font-bold hover:bg-green-500 hover:text-white" type="submit"><Check />Confirmar</button>
+                            <button className="w-full flex justify-center items-center mt-4 p-2 border-2 border-green-500 rounded-lg font-bold hover:bg-green-500 hover:text-white cursor-pointer" type="submit"><Check />Confirmar</button>
                         </div>
                     )}
                 </form>
