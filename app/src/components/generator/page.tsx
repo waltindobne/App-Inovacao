@@ -41,26 +41,36 @@ function Page(){
             })
     }, []);
 
-    const handleEntrevista = async () => {
+    const handleEntrevista = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
         try {
             if (!candidate || !vacancy) return;
     
-            const responseNote = await NoteService.CreateNotes(candidate.id, vacancy.id, note, Number(origemEnum));
-            console.log(responseNote);
+            const responseNote = await NoteService.CreateNotes(candidate.id, vacancy.id, note, origemEnum);
+            console.log("Nota salva:", responseNote);
     
-            if (!responseNote) return;
+            if (!responseNote || responseNote.status !== 200) {
+                console.log("Erro ao salvar a nota.");
+                return;
+            }
+            const responseQuestions = await QuestionService.CreateQuestionsByIA(vacancy.id, candidate.id, origemEnum);
+            console.log("Perguntas geradas:", responseQuestions);
     
-            const responseQuestions = await QuestionService.CreateQuestionsByIA(vacancy.id, candidate.id, Number(origemEnum));
-            console.log(responseQuestions);
-    
-            setData(prev => ({
-                ...prev,
+            if (!responseQuestions || !responseQuestions.data) {
+                console.log("Erro ao gerar perguntas.");
+                return;
+            }
+            setData({
                 questions: responseQuestions.data
-            }));
+            });
+            
+    
+            router.push('/questions');
         } catch (error) {
-            console.log('Erro ao finalizar entrevista:', error);
+            console.error("Erro ao finalizar entrevista:", error);
         }
-    };
+    };    
 
     return (
         <div className="w-full">
@@ -69,21 +79,18 @@ function Page(){
                     <div className="">
                         <div className="bg-sky-800 py-4 px-6 rounded-2xl">
                             <div className="w-full flex justify-between">
-                                <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-200">{vacancy?.vacancyName}</p>
+                                <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-100">{vacancy?.vacancyName}</p>
                                 <p className="w-64 flex justify-center items-center text-amber-100"><b className="mr-2">Empresa: </b> {vacancy?.vacancyCreator} <Building className="ml-2 text-blue-300"/></p>
                                 <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum ?? 0]} <DatabaseZap className="ml-2 text-orange-300" /></p>
                             </div>
                             <div className="my-3 flex text-slate-100 justify-between items-start">
                                 <div className="w-80">
-                                    <p><b>Id:</b> {candidate?.id}</p>
-                                    <p><b>Nome:</b> {candidate?.candidateName}</p>
+                                    <p><b className="mr-1.5">Id:</b> {candidate?.id}</p>
+                                    <p><b className="mr-1.5">Nome:</b> {candidate?.candidateName}</p>
                                 </div>
-                                <div className="w-full flex justify-start items-start">
-                                    <p className="font-bold">Curriculo:</p>
+                                <div className="w-full flex justify-start items-start ml-3">
+                                    <p className="font-bold mr-1.5">Curriculo:</p>
                                     <p>{candidate?.candidate_CV}</p>
-                                </div>
-                                <div className="">
-                                    
                                 </div>
                             </div>
                         </div>
@@ -95,7 +102,7 @@ function Page(){
                                 placeholder="Digite aqui" 
                                 value={note} 
                                 onChange={(e) => setNote(e.target.value)}
-                                className="w-full min-h-24 max-h-24 p-2 bg-white border border-slate-400 rounded-lg outline-0"
+                                className="w-full min-h-60 max-h-60 p-2 bg-white border border-slate-400 rounded-lg outline-0"
                             />
                         </div>
                         <div className="w-full">

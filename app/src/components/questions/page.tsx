@@ -2,7 +2,7 @@
 import { Paperclip, Check, ArrowBigLeft, DatabaseZap, Building } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Vacancy, Candidate, Questions, Responses } from "@/Context/AppContext";
+import { Vacancy, Candidate, Questions, Responses, useData } from "@/Context/AppContext";
 import { CandidateService, CandidatureService, QuestionService, ResponseService, VacancyService } from "@/Services/WebApi";
 
 const Enum = [
@@ -14,10 +14,11 @@ const Enum = [
 function Page() {
     const router = useRouter();
     const [indiceAtual, setIndiceAtual] = useState(0);
-    
+    const { data, setData } = useData();
+    console.log(data);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [vacancy, setVacancy] = useState<Vacancy | null>(null);
-    const [questions, setQuestions] = useState<Questions[]>([]);
+    const [questions, setQuestions] = useState(data.questions || []);
     const [responses, setResponses] = useState<string[]>([]);
 
     const idCandidate = Number(localStorage.getItem('idCandidate'));
@@ -44,12 +45,19 @@ function Page() {
     }, []);
 
 
-    const handleEntrevista = async() => {
+    const handleEntrevista = async(e: React.FormEvent) => {
+        e.preventDefault();
         try{
             if (!candidate || !vacancy || !questions || !responses) return;
+
+            if (questions.length !== responses.length) {
+                console.log("Número de respostas não corresponde ao número de perguntas.");
+                return;
+            }
             const questionsIds = questions.map(i => i.id);
-            const response = ResponseService.CreateResponse(questionsIds, responses,origemEnum);
-            console.log(response);
+            const response = ResponseService.CreateResponse(questionsIds, responses, origemEnum);
+            console.log('Respostas Salvas com sucesso',response);
+            router.push('/candidate');
         }
         catch(error){
             console.log('Erro ao finalizar entrevista:', error)
@@ -68,7 +76,7 @@ function Page() {
                 <div className="w-full flex mb-6 pb-4 border-b border-slate-200">
                 <div className="w-full bg-sky-800 py-4 px-6 rounded-2xl">
                     <div className="w-full flex justify-between">
-                        <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-200">{vacancy?.vacancyName}</p>
+                        <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-100">{vacancy?.vacancyName}</p>
                         <p className="w-64 flex justify-center items-center text-amber-100"><b className="mr-2">Empresa: </b> {vacancy?.vacancyCreator} <Building className="ml-2 text-blue-300"/></p>
                         <p className="w-64 ml-4 flex justify-end items-center text-amber-100"><b className="mr-2">Origem:</b> {Enum[vacancy?.origemEnum ?? 0]} <DatabaseZap className="ml-2 text-orange-300" /></p>
                     </div>
@@ -85,9 +93,9 @@ function Page() {
                 </div>
                 </div>
                 <form onSubmit={handleEntrevista}>
-                    {questions?.map((pergunta, index) => (
+                    {questions.map((pergunta, index) => (
                         <div key={index} className="mt-4 flex flex-col w-full">
-                            <label><b>{pergunta.question}</b></label>
+                            <label><b className="text-blue-900">{index + 1} -</b><b> {pergunta.question}</b></label>
                             <input
                             type="text"
                             value={responses[index] || ''}

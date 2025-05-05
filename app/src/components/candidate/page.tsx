@@ -28,7 +28,7 @@ function Page(){
         try{
             localStorage.setItem('idVaga', String(externalId));
             localStorage.setItem('origem', String(origem));
-            console.log(origem)
+            console.log(origem);
             const responseVaga = await VacancyService.GetVacancyByExternalId(Number(externalId), origem);
             console.log('Vaga Encontrada:', responseVaga);
             setSelectedVaga(responseVaga.data);
@@ -51,7 +51,7 @@ function Page(){
     };
 
     const handleToRanking = () => {
-        router.push('/Ranking')
+        router.push('/ranking')
     }
 
     const OpenCV = (e: React.MouseEvent, candidato: Candidate) => {
@@ -71,7 +71,7 @@ function Page(){
         <div className="w-4/5 mx-auto py-10">
             
             <div className="w-full flex flex-wrap justify-center items-center">
-            {candidates.length !== 0 ? (
+            {candidates.length === 0 ? (
                 <div className="w-full h-screen bg-[rgb(0,0,0,0.5)] fixed inset-0 flex justify-center items-center">
                         <form onSubmit={(e) => {
                             e.preventDefault();
@@ -92,14 +92,14 @@ function Page(){
                 ) : (
                 <div className="w-full bg-white">
                     <div className="w-full flex justify-center items-center">
-                        <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl ">
+                        <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl">
                             <h1 className="text-2xl font-bold">{selectedVaga?.vacancyName}</h1>
                             <p>{selectedVaga?.description}</p>
                             <div className="flex justify-between items-center mt-4">
                                 <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>
                                 <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum ?? 0]}</p>
-                                <p className="flex"><UserCog className="mr-2 text-green-400"/>Creador: {selectedVaga?.vacancyCreator}</p>
-                                <button className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
+                                <p className="flex"><UserCog className="mr-2 text-green-400"/>Criador: {selectedVaga?.vacancyCreator}</p>
+                                <button onClick={handleToRanking} className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
                             </div>
                         </div>
                     </div>
