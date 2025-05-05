@@ -18,11 +18,23 @@ function Page(){
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [vacancy, setVacancy] = useState<Vacancy | null>(null);
 
-    const idCandidate = Number(localStorage.getItem('idCandidate'));
-    const idVaga = Number(localStorage.getItem('idVaga'));
-    const origemEnum = Number(localStorage.getItem('origem'));
+    const [idCandidate, setIdCandidate] = useState<number | null>(null);
+    const [idVaga, setIdVaga] = useState<number | null>(null);
+    const [origemEnum, setOrigemEnum] = useState<number | null>(null);
+
 
     useEffect(() => {
+        const idC = Number(localStorage.getItem('idCandidate'));
+        const idV = Number(localStorage.getItem('idVaga'));
+        const origem = Number(localStorage.getItem('origem'));
+    
+        setIdCandidate(idC);
+        setIdVaga(idV);
+        setOrigemEnum(origem);
+    }, []);
+
+    useEffect(() => {
+        if (idVaga == null || origemEnum == null || idCandidate == null) return;
         VacancyService.GetVacancyByExternalId(idVaga, origemEnum)
             .then((response) => {
                 console.log(response.data);
@@ -45,7 +57,7 @@ function Page(){
         e.preventDefault();
         
         try {
-            if (!candidate || !vacancy) return;
+            if (!candidate || !vacancy || !origemEnum) return;
     
             const responseNote = await NoteService.CreateNotes(candidate.id, vacancy.id, note, origemEnum);
             console.log("Nota salva:", responseNote);
