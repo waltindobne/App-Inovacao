@@ -21,11 +21,23 @@ function Page() {
     const [questions, setQuestions] = useState(data.questions || []);
     const [responses, setResponses] = useState<string[]>([]);
 
-    const idCandidate = Number(localStorage.getItem('idCandidate'));
-    const idVaga = Number(localStorage.getItem('idVaga'));
-    const origemEnum = Number(localStorage.getItem('origem'));
+    const [idCandidate, setIdCandidate] = useState<number | null>(null);
+    const [idVaga, setIdVaga] = useState<number | null>(null);
+    const [origemEnum, setOrigemEnum] = useState<number | null>(null);
+
 
     useEffect(() => {
+        const idC = Number(localStorage.getItem('idCandidate'));
+        const idV = Number(localStorage.getItem('idVaga'));
+        const origem = Number(localStorage.getItem('origem'));
+    
+        setIdCandidate(idC);
+        setIdVaga(idV);
+        setOrigemEnum(origem);
+    }, []);
+
+    useEffect(() => {
+        if (idVaga == null || origemEnum == null || idCandidate == null) return;
         VacancyService.GetVacancyByExternalId(idVaga, origemEnum)
             .then((response) => {
                 console.log(response.data);
@@ -48,7 +60,7 @@ function Page() {
     const handleEntrevista = async(e: React.FormEvent) => {
         e.preventDefault();
         try{
-            if (!candidate || !vacancy || !questions || !responses) return;
+            if (!candidate || !vacancy || !questions || !responses || !origemEnum) return;
 
             if (questions.length !== responses.length) {
                 console.log("Número de respostas não corresponde ao número de perguntas.");
