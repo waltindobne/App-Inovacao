@@ -1,35 +1,63 @@
-"use client"
+"use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-export interface Vaga {
+export interface Vacancy {
     id: number;
-    foto: string;
-    vaga: string;
-    quantidade: number;
-    salario: number;
-    requisitos: string;
+    vacancyName: string;
+    description: string;
+    vacancyCreator: string;
+    origemEnum: number;
 }
 
-export interface Candidato {
+export interface Candidate {
     id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    idade: number;
-    aptidao: number;
-    motivo: string;
-    vaga: number;
-    foto: string;
+    candidateName: string;
+    candidate_CV: string;
+    origemEnum: number;
+    idf_Candidate: number;
+    idf_Vacancy: number;
+    percentage: number;
+    reason: string;
 }
+
+
+export interface Questions {
+    id: number;
+    question: string;
+    Idf_Candidature: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+
+export interface Responses {
+    id: number;
+    Response: string;
+    Idf_Question: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+
+export interface Note {
+    id: number;
+    Note: string;
+    Idf_Candidature: number;
+    Date_Create: string;
+    Date_Update: string;
+}
+
+export interface Candidature {
+    id: number;
+    TAB_Candidate: Candidate;
+    TAB_Vacancy: Vacancy;
+    TAB_Interview_Notes: Note;
+    TAB_Questions: Questions;
+    Date_Create: string;
+    Date_Update: string;
+}
+
 
 interface Data {
-    perguntas: string[];
-    respostas: string[];
-    vaga: Vaga[];
-    curriculo: Candidato[];
-    anotacoes: string;
-    transcricao: string;
-    relatorios: string;
+    questions: Questions[];
 }
 
 interface DataContextType {
@@ -41,13 +69,7 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const defaultData: Data = {
-        perguntas: [],
-        respostas: [],
-        vaga: [],
-        curriculo: [],
-        anotacoes: "",
-        transcricao: "",
-        relatorios: ""
+        questions: []
     };
 
     const [data, setDataState] = useState<Data>(defaultData);
@@ -57,27 +79,18 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const storedData = localStorage.getItem("appData");
             if (storedData && storedData !== "undefined") {
                 const parsedData = JSON.parse(storedData);
-                setDataState({
-                    ...defaultData,
-                    ...parsedData,
-                    vaga: parsedData.vaga || [],
-                    curriculo: parsedData.curriculo || [],
-                    perguntas: parsedData.perguntas || [],
-                    respostas: parsedData.respostas || []
-                });
+                setDataState(parsedData);
             }
         } catch (error) {
             console.error("Erro ao carregar dados do localStorage:", error);
-            localStorage.removeItem("appData"); // Limpa dados inválidos
+            localStorage.removeItem("appData");
         }
     }, []);
 
     const setData = (newData: Data | ((prev: Data) => Data)) => {
-        setDataState(prev => {
-            const updatedData = typeof newData === 'function' ? newData(prev) : newData;
-            localStorage.setItem("appData", JSON.stringify(updatedData));
-            return updatedData;
-        });
+        const updatedData = typeof newData === "function" ? newData(data) : newData;
+        setDataState(updatedData);
+        localStorage.setItem("appData", JSON.stringify(updatedData));
     };
 
     return (
