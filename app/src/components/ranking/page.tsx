@@ -20,11 +20,23 @@ function Page(){
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
     
-    const idCandidate = Number(localStorage.getItem('idCandidate'));
-    const idVaga = Number(localStorage.getItem('idVaga'));
-    const origemEnum = Number(localStorage.getItem('origem'));
+    const [idCandidate, setIdCandidate] = useState<number | null>(null);
+    const [idVaga, setIdVaga] = useState<number | null>(null);
+    const [origemEnum, setOrigemEnum] = useState<number | null>(null);
+
 
     useEffect(() => {
+        const idC = Number(localStorage.getItem('idCandidate'));
+        const idV = Number(localStorage.getItem('idVaga'));
+        const origem = Number(localStorage.getItem('origem'));
+    
+        setIdCandidate(idC);
+        setIdVaga(idV);
+        setOrigemEnum(origem);
+    }, []);
+    
+    useEffect(() => {
+        if (idVaga == null || origemEnum == null) return;
         const fetchRanking = async () => {
             try {
                 console.log("idVaga:", idVaga, "origemEnum:", origemEnum);
