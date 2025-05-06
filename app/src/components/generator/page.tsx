@@ -90,7 +90,7 @@ function Page(){
 
     return (
         <div className="w-full">
-            <div className="w-3xl my-10 mx-auto">
+            <div className="w-4/5 mb-10 mx-auto">
                 <form onSubmit={handleEntrevista} className="w-full p-8 bg-white rounded-2xl text-slate-800 flex flex-col">
                     <div className="">
                         <div className="bg-sky-800 py-4 px-6 rounded-2xl">

@@ -54,6 +54,13 @@ function Page(){
         router.push('/ranking')
     }
 
+    const handleAlterVacancacy = () => {
+        setCandidates([]);
+        setSelectedVaga(null);
+        setExternalId('');
+    };
+    
+
     const OpenCV = (e: React.MouseEvent, candidato: Candidate) => {
         e.stopPropagation();
         setSelectedCandidate(candidato);
@@ -94,7 +101,7 @@ function Page(){
                         <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl">
                             <div className="w-full mb-3 flex justify-between items-center">
                                 <h1 className="text-2xl text-amber-100 font-bold">{selectedVaga?.vacancyName}</h1>
-                                <button className="py-2 px-4 border-2 border-red-800 bg-red-400 rounded-xl text-slate-800 font-bold translate cursor-pointer">Trocar de Vaga</button>
+                                <button onClick={handleAlterVacancacy} className="py-2 px-4 border-2 border-red-800 bg-red-500 rounded-xl text-slate-50 font-bold translate cursor-pointer">Trocar de Vaga</button>
                             </div>
                             <p>{selectedVaga?.description}</p>
                             <div className="flex justify-between items-center mt-4">

@@ -9,6 +9,7 @@ import Vagas from "@/components/candidate/page";
 export default function Home(){
     return (
         <main>
+            <Header/>
             <Candidate/>
         </main>
     )
