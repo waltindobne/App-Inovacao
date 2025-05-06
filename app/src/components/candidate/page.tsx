@@ -69,7 +69,6 @@ function Page(){
     };
     return(
         <div className="w-4/5 mx-auto py-10">
-            
             <div className="w-full flex flex-wrap justify-center items-center">
             {candidates.length === 0 ? (
                 <div className="w-full h-screen bg-[rgb(0,0,0,0.5)] fixed inset-0 flex justify-center items-center">
@@ -93,7 +92,10 @@ function Page(){
                 <div className="w-full bg-white">
                     <div className="w-full flex justify-center items-center">
                         <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl">
-                            <h1 className="text-2xl font-bold">{selectedVaga?.vacancyName}</h1>
+                            <div className="w-full mb-3 flex justify-between items-center">
+                                <h1 className="text-2xl text-amber-100 font-bold">{selectedVaga?.vacancyName}</h1>
+                                <button className="py-2 px-4 border-2 border-red-800 bg-red-400 rounded-xl text-slate-800 font-bold translate cursor-pointer">Trocar de Vaga</button>
+                            </div>
                             <p>{selectedVaga?.description}</p>
                             <div className="flex justify-between items-center mt-4">
                                 <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>

@@ -31,30 +31,34 @@ function Page() {
         const idV = Number(localStorage.getItem('idVaga'));
         const origem = Number(localStorage.getItem('origem'));
     
+        if (isNaN(idC) || isNaN(idV) || isNaN(origem)) {
+            console.error("Dados inválidos no localStorage");
+            return;
+        }
+    
         setIdCandidate(idC);
         setIdVaga(idV);
         setOrigemEnum(origem);
-    }, []);
-
-    useEffect(() => {
-        if (idVaga == null || origemEnum == null || idCandidate == null) return;
-        VacancyService.GetVacancyByExternalId(idVaga, origemEnum)
+    
+        VacancyService.GetVacancyByExternalId(idV, origem)
             .then((response) => {
                 console.log(response.data);
                 setVacancy(response.data);
             })
             .catch((error) => {
-                console.log(error);
-            })
-        CandidateService.GetCandidateById(origemEnum, idCandidate)
+                console.log("Erro ao buscar vaga:", error);
+            });
+    
+        CandidateService.GetCandidateById(origem, idC)
             .then((response) => {
                 console.log(response.data);
                 setCandidate(response.data);
             })
             .catch((error) => {
-                console.log(error);
-            })
+                console.log("Erro ao buscar candidato:", error);
+            }); 
     }, []);
+    
 
 
     const handleEntrevista = async(e: React.FormEvent) => {
@@ -69,7 +73,7 @@ function Page() {
             const questionsIds = questions.map(i => i.id);
             const response = ResponseService.CreateResponse(questionsIds, responses, origemEnum);
             console.log('Respostas Salvas com sucesso',response);
-            router.push('/candidate');
+            router.push('/ranking');
         }
         catch(error){
             console.log('Erro ao finalizar entrevista:', error)
