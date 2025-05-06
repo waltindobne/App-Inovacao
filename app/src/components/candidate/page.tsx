@@ -51,7 +51,7 @@ function Page(){
     };
 
     const handleToRanking = () => {
-        router.push('/ranking')
+        router.push('/Ranking')
     }
 
     const handleAlterVacancacy = () => {

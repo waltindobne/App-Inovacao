@@ -73,7 +73,7 @@ function Page() {
             const questionsIds = questions.map(i => i.id);
             const response = ResponseService.CreateResponse(questionsIds, responses, origemEnum);
             console.log('Respostas Salvas com sucesso',response);
-            router.push('/ranking');
+            router.push('/Ranking');
         }
         catch(error){
             console.log('Erro ao finalizar entrevista:', error)

@@ -9,7 +9,7 @@ export default function Page(){
         router.push("/")
     }
     const handleSendToRanking = () =>{
-        router.push("/ranking")
+        router.push("/Ranking")
     }
     const handleSendToEntrevista = () =>{
         router.push("/generator")
