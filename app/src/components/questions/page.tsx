@@ -18,7 +18,8 @@ function Page() {
     console.log(data);
     const [candidate, setCandidate] = useState<Candidate | null>(null);
     const [vacancy, setVacancy] = useState<Vacancy | null>(null);
-    const [questions, setQuestions] = useState(data.questions || []);
+    //const [questions, setQuestions] = useState(data.questions || []);
+    const [questions, setQuestions] = useState<Questions[]>([]);
     const [responses, setResponses] = useState<string[]>([]);
 
     const [idCandidate, setIdCandidate] = useState<number | null>(null);
@@ -73,23 +74,42 @@ function Page() {
             const questionsIds = questions.map(i => i.id);
             const response = ResponseService.CreateResponse(questionsIds, responses, origemEnum);
             console.log('Respostas Salvas com sucesso',response);
+            localStorage.removeItem('appData');
             router.push('/Ranking');
         }
         catch(error){
             console.log('Erro ao finalizar entrevista:', error)
         }
     }
+
+    const handleCreateQuest = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (!candidate || !vacancy || !origemEnum) return;
+            const responseQuestions = await QuestionService.CreateQuestionsByIA(vacancy.id, candidate.id, origemEnum);
+            console.log("Perguntas geradas:", responseQuestions);
+    
+            if (!responseQuestions || !responseQuestions.data) {
+                console.log("Erro ao gerar perguntas.");
+                return;
+            }
+            setQuestions(responseQuestions.data);
+        } catch (error) {
+            console.error("Erro ao finalizar entrevista:", error);
+        }
+    };
+
     const handleChangeResponse = (index: number, value: string) => {
         const newResponses = [...responses];
         newResponses[index] = value;
         setResponses(newResponses);
-      };
+    };
 
     return (
-        <div className="w-3/5 p-8 mx-auto my-10">
+        <div className="w-4/5 p-8 mx-auto mb-10">
             {/*<h1 className="text-blue-900 text-2xl">Perguntas e Respostas</h1>*/}
             <div className="w-full text-slate-800">
-                <div className="w-full flex mb-6 pb-4 border-b border-slate-200">
+                {/*<div className="w-full flex mb-6 pb-4 border-b border-slate-200">
                 <div className="w-full bg-sky-800 py-4 px-6 rounded-2xl">
                     <div className="w-full flex justify-between">
                         <p className="w-full flex justify-start items-center font-bold text-2xl text-amber-100">{vacancy?.vacancyName}</p>
@@ -107,25 +127,29 @@ function Page() {
                         </div>
                     </div>
                 </div>
-                </div>
-                <form onSubmit={handleEntrevista}>
-                    {questions.map((pergunta, index) => (
-                        <div key={index} className="mt-4 flex flex-col w-full">
-                            <label><b className="text-blue-900">{index + 1} -</b><b> {pergunta.question}</b></label>
-                            <input
-                            type="text"
-                            value={responses[index] || ''}
-                            onChange={(e) => handleChangeResponse(index, e.target.value)}
-                            className="w-full p-2 bg-slate-50 border-b border-slate-400 outline-0"
-                            />
-                        </div>
-                    ))}
-                    {responses.length === questions.length && responses.every(resposta => resposta?.trim() !== "") && (
-                        <div>
-                            <button className="w-full flex justify-center items-center mt-4 p-2 border-2 border-green-500 rounded-lg font-bold hover:bg-green-500 hover:text-white cursor-pointer" type="submit"><Check />Confirmar</button>
-                        </div>
-                    )}
-                </form>
+                </div>*/}
+                {questions.length === 0 ? (
+                    <button onClick={handleCreateQuest} className="w-full p-2 flex justify-center border-2 border-green-500 text-slate-900 font-bold rounded-lg hover:bg-green-500 hover:text-white cursor-pointer">Gerar Perguntas</button>
+                ):(
+                    <form onSubmit={handleEntrevista}>
+                        {questions.map((pergunta, index) => (
+                            <div key={index} className="mt-4 flex flex-col w-full">
+                                <label><b className="text-blue-900">{index + 1} -</b><b> {pergunta.question}</b></label>
+                                <input
+                                type="text"
+                                value={responses[index] || ''}
+                                onChange={(e) => handleChangeResponse(index, e.target.value)}
+                                className="w-full p-2 bg-slate-50 border-b border-slate-400 outline-0"
+                                />
+                            </div>
+                        ))}
+                        {responses.length === questions.length && responses.every(resposta => resposta?.trim() !== "") && (
+                            <div>
+                                <button className="w-full flex justify-center items-center mt-4 p-2 border-2 border-green-500 rounded-lg font-bold hover:bg-green-500 hover:text-white cursor-pointer" type="submit"><Check />Confirmar</button>
+                            </div>
+                        )}
+                    </form>
+                )}
             </div>
         </div>
     )

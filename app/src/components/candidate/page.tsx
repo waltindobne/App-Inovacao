@@ -24,6 +24,27 @@ function Page(){
     const [externalId, setExternalId] = useState('');
     const [origem, setOrigem] = useState(1);
 
+    useEffect(() => {
+        const idVaga = Number(localStorage.getItem('idVaga'));
+        const origem = Number(localStorage.getItem('origem'));
+        VacancyService.GetVacancyByExternalId(idVaga, origem)
+            .then((response) => {
+                console.log('vaga:',response.data);
+                setSelectedVaga(response.data);
+            })
+            .catch((error) => {
+                console.log('Erro ao tentar retornar a vaga: ', error);
+            });
+        CandidateService.GetAllCandidates(idVaga, origem)
+            .then((response) => {
+                console.log(response.data);
+                setCandidates(response.data);
+            })
+            .catch((error) => {
+                console.log('Erro ao tentar retornar os candidato:',error);
+            })
+    }, [])
+
     const handleCandidatosVaga = async() => {
         try{
             localStorage.setItem('idVaga', String(externalId));
@@ -76,77 +97,57 @@ function Page(){
     };
     return(
         <div className="w-4/5 mx-auto py-10">
-            <div className="w-full flex flex-wrap justify-center items-center">
-            {candidates.length === 0 ? (
-                <div className="w-full h-screen bg-[rgb(0,0,0,0.5)] fixed inset-0 flex justify-center items-center">
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            handleCandidatosVaga();
-                        }} className="w-xl p-6 bg-white rounded-xl">
-
-                        <h1 className="
-                        text-red-900 w-full bg-red-300 flex justify-center p-4 border border-red-700 rounded-2xl">!! Nenhuma Vaga foi selecionada passe a Origem e o Idf da Vaga !!</h1>
-                        <select name="OrigemEnum" className="w-full p-3 mt-6 bg-gray-300 rounded-lg text-slate-800 outline-0 cursor-pointer"
-                        value={origem} onChange={(e) => setOrigem(Number(e.target.value))}>
-                            <option value="1" className="">BNE</option>
-                            <option value="2" className="">TBR</option>
-                        </select>
-                        <input type="number" placeholder="Idf da Vaga" className="w-full px-3 py-2 mt-3 rounded-lg bg-gray-300 text-slate-800 outline-0" value={externalId} onChange={(e) => setExternalId(e.target.value)}/>
-                        <button className="w-full p-2 mt-6 bg-gray-100 border-2 border-green-500 rounded-lg text-slate-800 font-bold hover:bg-green-500 hover:text-white transition duration-200 cursor-pointer">Confirmar</button>
-                    </form>
-                </div>
-                ) : (
-                <div className="w-full bg-white">
-                    <div className="w-full flex justify-center items-center">
-                        <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl">
-                            <div className="w-full mb-3 flex justify-between items-center">
-                                <h1 className="text-2xl text-amber-100 font-bold">{selectedVaga?.vacancyName}</h1>
-                                <button onClick={handleAlterVacancacy} className="py-2 px-4 border-2 border-red-800 bg-red-500 rounded-xl text-slate-50 font-bold translate cursor-pointer">Trocar de Vaga</button>
-                            </div>
-                            <p>{selectedVaga?.description}</p>
-                            <div className="flex justify-between items-center mt-4">
-                                <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>
-                                <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum ?? 0]}</p>
-                                <p className="flex"><UserCog className="mr-2 text-green-400"/>Criador: {selectedVaga?.vacancyCreator}</p>
-                                <button onClick={handleToRanking} className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
-                            </div>
+            <div className="w-full bg-white">
+                <div className="w-full flex justify-center items-center">
+                    <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl">
+                        <div className="w-full mb-3 flex justify-between items-center">
+                            <h1 className="text-2xl text-amber-100 font-bold">{selectedVaga?.vacancyName}</h1>
+                            <button onClick={handleAlterVacancacy} className="py-2 px-4 border-2 border-red-800 bg-red-500 rounded-xl text-slate-50 font-bold translate cursor-pointer">Trocar de Vaga</button>
+                        </div>
+                        <p>{selectedVaga?.description}</p>
+                        <div className="flex justify-between items-center mt-4">
+                            <p className="flex"><Tags className="mr-2 text-sky-400"/>id: {selectedVaga?.id}</p>
+                            <p className="flex"><DatabaseZap className="mr-2 text-orange-400"/>Origem: {Enum[selectedVaga?.origemEnum ?? 0]}</p>
+                            <p className="flex"><UserCog className="mr-2 text-green-400"/>Criador: {selectedVaga?.vacancyCreator}</p>
+                            <button onClick={handleToRanking} className="flex cursor-pointer bg-yellow-300 text-slate-800 font-semibold px-3 py-2 rounded-lg"><Medal className="text-sky-800 mr-2"/>Ranking</button>
                         </div>
                     </div>
+                </div>
 
-                    <h1 className="w-full flex justify-center my-5 text-2xl text-blue-900">Candidatos - {candidates.length}</h1>
+                <h1 className="w-full flex justify-center my-5 text-2xl text-blue-900">Candidatos - {candidates.length}</h1>
 
-                    <div className="w-full flex justify-center flex-wrap">
-                    {candidates.map((candidato: Candidate, index: Key | null | undefined) => (
-                    <button
-                        key={index}
-                        onClick={() => toggleEntrevista(candidato)}
-                        className="w-96 p-4 border-2 border-blue-900 rounded-2xl flex justify-center text-slate-800 m-1.5  hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out"
-                    >
-                        <div className="flex flex-col w-full">
-                            <div className=" flex flex-col justify-start items-start space-x-5">
-                                <div className="w-full flex justify-between space-x-0">
-                                    <h1 className=""><b className="mr-1">Id:</b> {candidato.id}</h1>
-                                    <p onClick={(e) => OpenCV(e, candidato)} className="font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser /></p>
-                                </div>
-                                <div className="flex">
-                                    <p className="mr-2 font-bold">Nome:</p>
-                                    <p>{candidato.candidateName}</p>
-                                </div>
-                                <div className="flex">
-                                    <p className="mr-2 font-bold">Origem:</p>
-                                    <p>{Enum[candidato.origemEnum ?? 0]}</p>
-                                </div>
+                <div className="w-full flex justify-center flex-wrap">
+                {candidates.map((candidato: Candidate, index: Key | null | undefined) => (
+                <button
+                    key={index}
+                    onClick={() => toggleEntrevista(candidato)}
+                    className="w-96 h-62 p-4 border-2 border-blue-900 rounded-2xl flex flex-col justify-between text-slate-800 m-1.5  hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out"
+                >
+                    <div className="flex flex-col w-full">
+                        <div className=" flex flex-col justify-start items-start space-x-5">
+                            <div className="w-full flex justify-between space-x-0">
+                                <h1 className=""><b className="mr-1">Id:</b> {candidato.id}</h1>
+                                {/*<p onClick={(e) => OpenCV(e, candidato)} className="font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser /></p>*/}
                             </div>
-                            <div className="text-justify">
-                                <p className="font-bold">Curriculo:</p>
-                                <p>{candidato.candidate_CV}</p>
+                            <div className="flex">
+                                <p className="mr-2 font-bold">Nome:</p>
+                                <p>{candidato.candidateName}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="mr-2 font-bold">Origem:</p>
+                                <p>{Enum[candidato.origemEnum ?? 0]}</p>
                             </div>
                         </div>
-                    </button>
-                    ))}
+                        <div className="text-justify">
+                            <p className="font-bold">Curriculo:</p>
+                            <p>{candidato.candidate_CV.slice(0, 135)}{candidato.candidate_CV.length > 135 ? "..." : ""}</p>
+                        </div>
+                        
                     </div>
+                    <button className="p-2 rounded-xl bg-green-500 mt-2 font-bold text-white cursor-pointer">Entrevistar</button>
+                </button>
+                ))}
                 </div>
-                )}
             </div>
         </div>
     )

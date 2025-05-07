@@ -121,11 +121,13 @@ export class NoteService {
     }
 
     static GetAllNotesByVacancyId(vacancyId: number) {
+        console.log(`/Notes/GetAllNotesByVacancyId/${vacancyId}`)
         return axiosInstance.get('/Notes/GetAllNotesByVacancyId', {
             headers: {
                 VacancyId: vacancyId
             }
         });
+        
     }
 
     static GetAllNotesByOrigem(origemEnum: number) {

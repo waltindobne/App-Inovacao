@@ -8,6 +8,9 @@ export default function Page(){
     const handleSendToVagas = () =>{
         router.push("/")
     }
+    const handleSendToCandidates = () =>{
+        router.push("/candidate")
+    }
     const handleSendToRanking = () =>{
         router.push("/Ranking")
     }
@@ -21,6 +24,7 @@ export default function Page(){
             <h1 className="text-blue-900 text-3xl mx-4 my-3">InterView Front</h1>
             <nav>
                 <button className="cursor-pointer px-3 py-2 border-2 bg-gray-200 mx-1 border-blue-900 hover:bg-blue-900 rounded-lg text-blue-900 hover:text-white transition duration-200 ease-in-out" onClick={handleSendToVagas}>Inicio</button>
+                <button className="cursor-pointer px-3 py-2 border-2 bg-gray-200 mx-1 border-blue-900 hover:bg-blue-900 rounded-lg text-blue-900 hover:text-white transition duration-200 ease-in-out" onClick={handleSendToCandidates}>Candidatos</button>
                 <button className="cursor-pointer px-3 py-2 border-2 bg-gray-200 mx-1 border-blue-900 hover:bg-blue-900 rounded-lg text-blue-900 hover:text-white transition duration-200 ease-in-out" onClick={handleSendToRanking}>Ranking</button>
                 <button className="cursor-pointer px-3 py-2 border-2 bg-gray-200 mx-1 border-blue-900 hover:bg-blue-900 rounded-lg text-blue-900 hover:text-white transition duration-200 ease-in-out" onClick={handleSendToEntrevista}>Entrevista</button>
             </nav>
