@@ -1,16 +1,12 @@
 "use client";
 import { useState, useEffect, ReactNode } from "react";
 import axios from "axios";
-import { ArrowBigLeft, DatabaseZap, FileUser, Medal, Tags, UserCog } from "lucide-react";
+import { Hash, DatabaseZap, FileUser, Medal, Tags, UserCog } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Candidate, useData, Vacancy } from "@/Context/AppContext";
 import { CandidateService, RankingService, VacancyService } from "@/Services/WebApi";
 
-const Enum = [
-    "",
-    "BNE",
-    "TBR"
-]
+const Enum = ["", "BNE", "TBR"]
 
 function Page() {
     const router = useRouter();
@@ -134,14 +130,14 @@ function Page() {
             ) : (
                 <div>
                     <div className="w-full flex justify-center items-center">
-                        <div className="w-full py-6 px-8 bg-sky-900 rounded-2xl ">
+                        <div className="w-full py-6 px-8 bg-sky-800 rounded-2xl ">
                             <div className="w-full flex justify-between items-center mb-2">
                                 <h1 className="text-2xl font-bold text-amber-100">{vacancy?.vacancyName}</h1>
                                 <button onClick={handleRanking} className="py-2 px-4 border-2 border-green-800 bg-green-500 rounded-xl text-slate-50 font-bold translate cursor-pointer">Atualizar Ranking</button>
                             </div>
                             <p>{vacancy?.description}</p>
-                            <div className="flex justify-around items-center mt-4">
-                                <p className="flex"><Tags className="mr-2 text-sky-400" />id: {vacancy?.id}</p>
+                            <div className="flex justify-between items-center mt-4">
+                                <p className="flex"><Hash className="mr-2 text-sky-400" />id: {vacancy?.id}</p>
                                 <p className="flex"><DatabaseZap className="mr-2 text-orange-400" />Origem: {Enum[vacancy?.origemEnum ?? 0]}</p>
                                 <p className="flex"><UserCog className="mr-2 text-green-400" />Creador: {vacancy?.vacancyCreator}</p>
                             </div>
@@ -150,25 +146,24 @@ function Page() {
                     <h1 className="w-full flex justify-center text-2xl text-blue-900 mt-5">Ranking dos Candidatos - {candidates.length}</h1>
                     <div className="w-full flex justify-center flex-wrap">
                         {ordenarPorAptidao(candidates).map((candidato, index) => (
-                            <button className="w-96 p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index} /*onClick={(e) => OpenCV(e,candidato)}*/>
+                            <button className="w-96 min-h-40 p-4 border-2 border-blue-900 rounded-2xl flex text-slate-800 m-1.5 hover:bg-slate-200 hover:text-sky-900 hover:scale-102 cursor-pointer transition duration-200 ease-in-out" key={index} /*onClick={(e) => OpenCV(e,candidato)}*/>
                                 <div className="">
                                     <div className="flex w-full justify-between">
-                                        <h1><b className="mr-1">N°:</b>{index + 1}</h1>
-                                        <h1><b className="mr-1">Id:</b> {candidato.idf_Candidate}</h1>
-                                        {/*<div className="flex">
-                                    <tr className="mr-2 font-bold">nome:</tr>
-                                    <td>{candidato.candidateName}</td>
-                                </div>*/}
+                                        <h1 className={`mr-1 flex items-center ${index + 1 === 1 ? "text-yellow-500" : index + 1 === 2 ? "text-gray-500" : index + 1 === 3 ? "text-orange-500" : "" }`}>
+                                            <b className="mr-1 flex items-center">
+                                                <Medal className={`mr-1 flex items-center ${index + 1 === 1 ? "text-yellow-500" : index + 1 === 2 ? "text-gray-500" : index + 1 === 3 ? "text-orange-500" : "text-blue-600" }`} />N°:
+                                            </b>
+                                            {index + 1}
+                                        </h1>
                                         <div className="flex">
-                                            <tr className="mr-2 font-bold">Porcentagem:</tr>
-                                            <td>{candidato.percentage}%</td>
+                                            <h1 className="flex font-bold items-center">Porcentagem:<p className="ml-1 font-light">{candidato.percentage}%</p></h1>
                                         </div>
                                         <div className="flex">
-                                            <button onClick={(e) => OpenCV(e, candidato)} className="mr-2 font-bold text-green-700 hover:scale-110 cursor-pointer"><FileUser /></button>
+                                            <button onClick={(e) => OpenCV(e, candidato)} className="mr-2 font-bold text-green-700 hover:scale-110 cursor-pointer flex">CV<FileUser /></button>
                                         </div>
                                     </div>
                                     <div className=" mt-2">
-                                        <td>{candidato.reason.slice(0, 135)}{candidato.reason.length > 135 ? "..." : ""}</td>
+                                        <td>{candidato.reason.slice(0, 130)}{candidato.reason.length > 130 ? "..." : ""}</td>
                                     </div>
                                 </div>
                             </button>
