@@ -4,7 +4,7 @@ const username = "Inovacao";
 const password = "fd7aac0b-76f5-492d-8549-d11a96b1b773";
 const basicAuth = btoa(`${username}:${password}`);
 export const axiosInstance = axios.create({
-  baseURL: "https://interview.bne.com.br/",
+  baseURL: "https://testing-interview.bne.com.br/",
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Basic ${basicAuth}`,
