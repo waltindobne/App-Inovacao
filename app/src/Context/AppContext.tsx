@@ -14,7 +14,12 @@ export interface Candidate {
     candidateName: string;
     candidate_CV: string;
     origemEnum: number;
+    idf_Candidate: number;
+    idf_Vacancy: number;
+    percentage: number;
+    reason: string;
 }
+
 
 export interface Questions {
     id: number;

@@ -26,7 +26,7 @@ export class CandidateService {
                 origem: origem
             },
             headers: {
-                externalId: idCandidate
+                candidateId: idCandidate
             }
         });
     }
@@ -49,30 +49,30 @@ export class QuestionService {
     static GetAllQuestionsByOrigem(){
         return axiosInstance.post('/Questions/GetAllQuestionsByOrigem');
     }
-    static CreateQuestionsByIA(VacancyId: number, CandidateId: number, origem: number){
-        return axiosInstance.post('/Questions/CreateQuestionsByIA', {
-            params:{
-                vacancyId: VacancyId
-            },
-            headers:{
-                candidateId: CandidateId,
-                origem: origem                
+    static CreateQuestionsByIA(VacancyId: number, CandidateId: number, origem: number) {
+        return axiosInstance.post(`/Questions/CreateQuestionsByIA?candidateId=${CandidateId}&origem=${origem}`,
+            {},
+            {
+                headers: {
+                    vacancyId: VacancyId
+                }
             }
-        })
+        );
     }
+    
     static CreateQuestion(){
         return axiosInstance.post('/Questions/CreateQuestion');
     }
 }
 export class ResponseService {
     static GetAllResponses(){
-        return axiosInstance.get('/Questions/GetAllResponses');
+        return axiosInstance.get('/Responses/GetAllResponses');
     }
     static GetResponseByCandidatureId(){
-        return axiosInstance.get('/Questions/GetResponseByCandidatureId');
+        return axiosInstance.get('/Responses/GetResponseByCandidatureId');
     }
     static CreateResponse(idf_questions: number[], responses: string[], origemEnum: number){
-        return axiosInstance.post('/Questions/CreateResponse', {
+        return axiosInstance.post('/Responses/CreateResponse', {
             idf_Questions: idf_questions,
             responses: responses,
             origemEnum: origemEnum
@@ -93,21 +93,25 @@ export class VacancyService {
 }
 export class RankingService {
     static GetAllRankings(){
-        return axiosInstance.get('/Vacancy/GetAllRankings');
+        return axiosInstance.get('/Ranking/GetAllRankings');
     }
     static GetAllRankingsByVacancyId(vacancyId: number){
-        return axiosInstance.get('/Vacancy/GetAllRankingsByVacancyId',{
+        return axiosInstance.get('/Ranking/GetAllRankingsByVacancyId',{
             headers:{
                 vacancyId: vacancyId
             }
         });
     }
     static GetAllRankingsByOrigem(){
-        return axiosInstance.get('/Vacancy/GetAllRankingsByOrigem');
+        return axiosInstance.get('/Ranking/GetAllRankingsByOrigem');
     }
-    static CreateRankingByIA(){
-        return axiosInstance.get('/Vacancy/CreateRankingByIA');
-    }
+    static CreateRankingByIA(origem: number, vacancyId: number){
+        return axiosInstance.post(`/Ranking/CreateRankingByIA?origemEnum=${origem}`, null, {
+            headers: {
+                VancacyId: vacancyId
+            }
+        });
+    }    
 }
 export class NoteService {
     static GetAllNotes(queryOptions: any) {
@@ -117,11 +121,13 @@ export class NoteService {
     }
 
     static GetAllNotesByVacancyId(vacancyId: number) {
+        console.log(`/Notes/GetAllNotesByVacancyId/${vacancyId}`)
         return axiosInstance.get('/Notes/GetAllNotesByVacancyId', {
             headers: {
                 VacancyId: vacancyId
             }
         });
+        
     }
 
     static GetAllNotesByOrigem(origemEnum: number) {
