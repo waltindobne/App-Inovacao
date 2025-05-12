@@ -16,7 +16,7 @@ export class CandidateService {
     static GetAllCandidates(VacancyId: number, origem: number){
         return axiosInstance.get(`/Candidate/GetAllCandidates?origem=${origem}`, {
             headers: {
-                vacancyId: VacancyId
+                vacancyId:  VacancyId
             }
         });
     }
